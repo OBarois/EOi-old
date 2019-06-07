@@ -1,0 +1,11 @@
+
+
+.DateSelector {
+  position: fixed;
+  top: 50%;
+  left:50%;
+  width: 200px;
+  height: 200px;
+  background: rgba(157, 82, 219, 0.2);
+  border-radius: 8px;
+}

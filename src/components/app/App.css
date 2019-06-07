@@ -1,5 +1,14 @@
+:root {
+  --color: rgb(48, 194, 238);
+}
+
+
 .App {
   text-align: center;
+  color: var(--color);
+  text-shadow: 0.1em 0.1em 0.15em  rgba(22, 22, 20, 0.74);
+  user-select: none;
+
 }
 
 .App-logo {
