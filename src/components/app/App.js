@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import logo from '../../assets/images/logo.svg';
 import './App.css'
 import Earth from '../earth'
@@ -9,10 +9,11 @@ function App() {
   const [viewdate, setViewdate] = useState(new Date())
 
   const changeDate = (newdate) => {
-    console.log('Date changed to: ' +newdate)
+    console.log('Date changed to: ' +newdate.toJSON())
     setViewdate(newdate)
   }
   
+
 
   return (
     <div className="App">

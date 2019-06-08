@@ -4,7 +4,6 @@ import './DateLabel.css';
 
 function DateLabel({viewdate, highlight, searching}) {
 
-console.log(searching)
 
   return (
     <div className='LabelContainer' >
