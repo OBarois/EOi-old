@@ -9,7 +9,7 @@ function App() {
   const [viewdate, setViewdate] = useState(new Date())
 
   const changeDate = (newdate) => {
-    console.log('Date changed to: ' +newdate.toJSON())
+    // console.log('Date increment: ' +newdate)
     setViewdate(newdate)
   }
   
