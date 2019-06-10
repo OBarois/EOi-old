@@ -15,6 +15,10 @@ function App() {
         // console.log('Date increment: ' +newdate)
         setViewdate(newdate)
     }
+    const handleClick = () => {
+        console.log('Change startdate:')
+        setStartdate(new Date(viewdate.getTime()+1000*60*60))
+    }
 
     useEffect(() => {
         console.log('Initial viewdate: '+viewdate.toJSON())
@@ -24,7 +28,7 @@ function App() {
 
     return (
         <div className="App">
-            <Earth viewdate={viewdate} />
+            <Earth viewdate={viewdate} onclick={handleClick}/>
             <DateManager startdate={startdate} viewdate={viewdate} searching='true' onDateChange={changeDate} />
         </div>
     )
