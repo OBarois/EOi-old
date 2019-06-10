@@ -6,21 +6,28 @@ import DateManager from '../datemanager.container'
 
 function App() {
 
-  const [viewdate, setViewdate] = useState(new Date())
-
-  const changeDate = (newdate) => {
-    // console.log('Date increment: ' +newdate)
-    setViewdate(newdate)
-  }
-  
+    const [viewdate, setViewdate] = useState(new Date())
+    const [startdate, setStartdate] = useState(viewdate)
+    
 
 
-  return (
-    <div className="App">
-      <Earth viewdate={viewdate}/>
-      <DateManager viewdate={viewdate}  searching='true' onDateChange={ changeDate}/>
-    </div>
-  );
+    const changeDate = (newdate) => {
+        // console.log('Date increment: ' +newdate)
+        setViewdate(newdate)
+    }
+
+    useEffect(() => {
+        console.log('Initial viewdate: '+viewdate.toJSON())
+    },[])
+        
+
+
+    return (
+        <div className="App">
+            <Earth viewdate={viewdate} />
+            <DateManager startdate={startdate} viewdate={viewdate} searching='true' onDateChange={changeDate} />
+        </div>
+    )
 }
 
 export default App;
