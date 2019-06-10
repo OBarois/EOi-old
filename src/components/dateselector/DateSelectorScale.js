@@ -20,8 +20,10 @@ const scaleText = (startdate, zoom) => {
     let day, month, hour, year = 0
     let lastday =0
     let lastmonth = 0
+    let lasthour = 0
     let tics = []    
     let putday = (zoom < 1000*60*60*24)
+    let puthour = (zoom < 1000*60*60)
     // console.log(startdate.toJSON())
     for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
         let refdate = new Date( (i- scale.current.offsetHeight/2) * zoom + startdate.getTime()  )
@@ -35,13 +37,14 @@ const scaleText = (startdate, zoom) => {
         if(day !== lastday && lastday!=0 && putday) tics.push({class:'DayTic', pos: i, label: day})
         // if( (day == 1 || day == 15) && day !== lastday ) {
         if(month !== lastmonth && lastday!=0) {
-                tics.push({class:'MonthTic', pos: i, label: month})
+            tics.push({class:'MonthTic', pos: i, label: month})
             tics.push({class:'YearTic', pos: i, label: year})
         }
         //if(year != lastyear) tics.push({class:'YearTic', pos: (i-props.min)/zoomfactor, label: year})
-        //if(hour != lasthour) tics.push({class:'HourTic', pos: (i-props.min)/zoomfactor, label: '.'})
+        if(hour != lasthour && puthour) tics.push({class:'HourTic', pos: i, label: hour})
         lastday = day
         lastmonth = month
+        lasthour = hour
     }
     
     return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))

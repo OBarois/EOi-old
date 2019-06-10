@@ -8,7 +8,7 @@ import './DateSelector.css';
 
 function DateSelector({startdate, onDateChange}) {
 
-    const STEPS = [ 1000*60*60 , 1000*60*60*24]
+    const STEPS = [ 1000*60*60 , 1000* 60, 1000*60*60*24]
 
     const selector = useRef()
     const [scaledate, setScaledate ] = useState(startdate)
@@ -35,6 +35,7 @@ function DateSelector({startdate, onDateChange}) {
             let step = 1
             let Xoffset = selector.current.parentElement.offsetWidth - event.clientX
             if (Xoffset > selector.current.offsetWidth) steparea = 1
+            if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
             if (steparea != temp.laststeparea) {
                 // step = Xoffset * 0.6
                 // setZoomfactor(1000*60*60*24*(selector.current.offsetWidth-Xoffset)/150)
