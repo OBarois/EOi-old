@@ -52,8 +52,15 @@ function DateSelectorScale({date, zoomfactor}) {
                 }
     
             } else if (putday) {
-                if(day !== lastday && lastday!=0 && putday) {
-                    tics.push({class:'DayTic', pos: i, label: day})
+                if(day !== lastday) {
+                    if (day != 1) {
+                        tics.push({class:'DayTic', pos: i, label: day})
+                    } else {
+                        tics.push({class:'DayTic', pos: i, label: day})
+                        tics.push({class:'MonthTic', pos: i, label: month})
+                        tics.push({class:'YearTic', pos: i, label: year})
+                     }
+                    
                 }
     
             } else if (putmonth) {
