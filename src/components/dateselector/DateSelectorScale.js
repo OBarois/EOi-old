@@ -16,7 +16,7 @@ function DateSelectorScale({date, zoomfactor}) {
     // },[date])
         
     const scaleText = (startdate, _zoom) => {
-        console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
+        // console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
         if(!scale.current) return
             
         const monthcode = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']

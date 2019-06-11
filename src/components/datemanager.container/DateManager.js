@@ -4,7 +4,7 @@ import DateController from '../datecontroller'
 import DateSelector from '../dateselector'
 
 
-function DateManager({startdate, onDateChange}) {
+function DateManager({startdate, onDateChange, searching}) {
 
     
 
@@ -32,7 +32,7 @@ function DateManager({startdate, onDateChange}) {
     return (
         <div >
           {/* <DateController onDateChange={handleClick}/> */}
-          <DateLabel date={labeldate} highlight='none' searching='true'/>
+          <DateLabel date={labeldate} highlight='none' animated={searching}/>
           <DateSelector startdate={currentdate} onDateChange={handleChange}/>
         </div>
     ) 

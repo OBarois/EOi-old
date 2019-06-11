@@ -7,8 +7,10 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 function App() {
 
-    const [viewdate, setViewdate] = useState(new Date())
-    const [startdate, setStartdate] = useState(new Date())
+    let initdate = new Date()
+    const [viewdate, setViewdate] = useState(initdate)
+    const [startdate, setStartdate] = useState(initdate)
+    const [searching, setSearching] = useState(false)
 
     
     const incrementDate = () => {
@@ -30,19 +32,19 @@ function App() {
     // }
 
     useEffect(() => {
-      console.log('Initial viewdate: '+viewdate.toJSON())
-  },[])
+        console.log('Initial viewdate: '+viewdate.toJSON())
+    },[])
       
-  useEffect(() => {
-    console.log('startdate changed to: '+startdate.toJSON())
-  },[startdate])
+    useEffect(() => {
+        console.log('startdate changed to: '+startdate.toJSON())
+    },[startdate])
     
 
 
     return (
         <div className="App">
             <Earth viewdate={viewdate}/>
-            <DateManager startdate={startdate}  searching='true' onDateChange={changeDate} />
+            <DateManager startdate={startdate}  searching={searching} onDateChange={changeDate} />
         </div>
     )
 }

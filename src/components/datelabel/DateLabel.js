@@ -2,7 +2,7 @@ import React from 'react';
 import dateFormat from "dateformat"
 import './DateLabel.css';
 
-function DateLabel({date, highlight, searching}) {
+function DateLabel({date, highlight, animated}) {
 
 
     return (
@@ -14,7 +14,7 @@ function DateLabel({date, highlight, searching}) {
                     <div className={highlight==='year' || highlight==='none'?'YearLabel ':'YearLabel Greyedout'}  key='year' >{date.getUTCFullYear()}</div>
                 </div>
             </div>
-            <div className={searching?'Line  Line-active':'Line'} key='line' ></div>
+            <div className={animated?'Line  Line-active':'Line'} key='line' ></div>
             <div className={highlight==='time' || highlight==='none'?'TimeLabel ':'TimeLabel Greyedout'} key='time' >{dateFormat(date,'UTC:HH:MM:ss')}</div>
         </div>
     )

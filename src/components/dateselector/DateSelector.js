@@ -13,6 +13,7 @@ function DateSelector({startdate, onDateChange}) {
     const selector = useRef()
     const [scaledate, setScaledate ] = useState(startdate)
     const [newstart, setNewstart ] = useState(startdate)
+    const [offset, setOffset ] = useState([0,0])
     // const [step, setStep ] = useState(1)
 
     // zoomfactor: how long is a pixel in ms
@@ -48,6 +49,7 @@ function DateSelector({startdate, onDateChange}) {
                 temp.laststeparea = steparea
                 temp.xy = [0,0]
                 temp.deltaoffset = delta
+                // setOffset(delta)
                 
             } 
             
@@ -57,15 +59,17 @@ function DateSelector({startdate, onDateChange}) {
             //     setStep(1)
             // }
 
-            velocity = (velocity<.15)?0:velocity  
+            velocity = (velocity<.1)?0:velocity  
             // console.log(sub(delta,temp.deltaoffset)+ '    xy: '+temp.xy) 
             set({ 
                 xy: add(scale(sub(delta,temp.deltaoffset),step), temp.xy), 
+                // xy: add(scale(sub(delta,offset),step), temp.xy), 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity*step), decay: true},
                 // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
                 // onFrame: ()=>{console.log('xy: '+xy.getValue())},
                 // config: config.gentle,
+                // config: {},
                 onFrame: ()=>{
                     let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
                     onDateChange(newdate)
@@ -85,33 +89,39 @@ function DateSelector({startdate, onDateChange}) {
     const [{ dater }, springDate] = useSpring(() => ({ dater: startdate.getTime()}))
 
     useEffect(() => {
-      console.log(startdate.toJSON())
+        console.log('will spring from: '+scaledate.toJSON()+' to: '+startdate.toJSON())
 
-      springDate({ 
-        to: {
-          dater: startdate.getTime(), 
-            // dater: date.getTime()
-        },
-        // config: { velocity: scale(direction, velocity*step), decay: true},
-        // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
-        // onFrame: ()=>{console.log('xy: '+xy.getValue())},
-        // config: config.gentle,
-        // immediate: true,
-        onFrame: ()=>{
-            // console.log(zoomer)
-            // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-            let _date = new Date(dater.value)
-            setScaledate(_date)
-            onDateChange(_date)
-            setNewstart(_date)
-      
-        }
-    })
+        springDate({ 
+            from: {
+                dater: scaledate.getTime()
+            },
+            to: {
+                dater: startdate.getTime(), 
+                // dater: date.getTime()
+            },
+            config: {  duration: 500},
+            // config: { velocity: 10, decay: true},
+            // config: { mass: 10, tension: 20 , friction: 40, precision: 1000 },
+            // onFrame: ()=>{console.log('xy: '+xy.getValue())},
+            // config: config.gentle,
+            // immediate: true,
+            onFrame: ()=>{
+                // console.log(zoomer)
+                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                let _date = new Date(dater.value)
+                setScaledate(_date)
+                onDateChange(_date)
+                // setNewstart(_date)
+            },
+            onRest: ()=>{
+                console.log('Finished')
+            }
+        })
 
-      // setScaledate(startdate)
-      // onDateChange(startdate)
-      // setNewstart(startdate)
-  },[startdate])
+        // setScaledate(startdate)
+        // onDateChange(startdate)
+        // setNewstart(startdate)
+    },[startdate])
 
   
 
