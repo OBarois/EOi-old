@@ -5,16 +5,17 @@ import './DateSelector.css';
 function DateSelectorScale({date, zoomfactor}) {
 
     const scale = useRef()
-    // const [startdate, ] = useState(date)    
+    const [start, setStart] = useState(date)    
+    const [active, setActive] = useState(false)    
     const [timescale, setTimescale] = useState('')    
     const [zoom, setZoom] = useState(zoomfactor)    
 
 
-    useEffect(() => {     
-        console.log(scale.current.offsetHeight)
-    },[])
+    // useEffect(() => {     
+    //     setStart(date)
+    // },[date])
         
-    const scaleText = (startdate, zoom) => {
+    const scaleText = (startdate, _zoom) => {
         console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
         if(!scale.current) return
             
@@ -24,16 +25,13 @@ function DateSelectorScale({date, zoomfactor}) {
         let lastmonth = 0
         let lasthour = 0
         let tics = []    
-        let putmonth = (zoom < 1000*60*60*24*10)
-        let putday = (zoom < 1000*60*60*2)
-        let puthour = (zoom < 1000*60*10)
+        let putmonth = (_zoom < 1000*60*60*24*10)
+        let putday = (_zoom < 1000*60*60*2)
+        let puthour = (_zoom < 1000*60*10)
         // console.log(startdate.toJSON())
         let lastpos = 0
         for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
-            let refdate = new Date( (i- scale.current.offsetHeight/2) * zoom + startdate.getTime()  )
-            // console.log(i * zoomfactor + date.getTime())
-
-            // console.log(refdate.toJSON())
+            let refdate = new Date( (i- scale.current.offsetHeight/2) * _zoom + startdate.getTime()  )
             day = refdate.getUTCDate()
             month = monthcode[refdate.getUTCMonth()]
             hour = refdate.getUTCHours()
@@ -75,8 +73,6 @@ function DateSelectorScale({date, zoomfactor}) {
     
             }
 
-            // if( (day == 1 || day == 15) && day !== lastday ) {
-            //if(year != lastyear) tics.push({class:'YearTic', pos: (i-props.min)/zoomfactor, label: year})
             lastday = day
             lastmonth = month
             lasthour = hour
@@ -90,17 +86,23 @@ function DateSelectorScale({date, zoomfactor}) {
     // },[date])
 
 
-    const [{ zoomer }, set] = useSpring(() => ({ zoomer: zoom }))
+    const [{ zoomer }, set] = useSpring(() => ({ zoomer: zoom}))
     useLayoutEffect(() => {
+        // console.log('from: '+start.getTime()+'  to: '+date.getTime())
         
         set({ 
-            zoomer: zoomfactor, 
+            to: {
+                zoomer: zoomfactor, 
+                // dater: date.getTime()
+            },
             // config: { velocity: scale(direction, velocity*step), decay: true},
             // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
             // onFrame: ()=>{console.log('xy: '+xy.getValue())},
             // config: config.gentle,
+            // immediate: true,
             onFrame: ()=>{
                 // console.log(zoomer)
+                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
                 setTimescale(scaleText(date,zoomer.value))
             }
         })

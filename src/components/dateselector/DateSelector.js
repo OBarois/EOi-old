@@ -82,6 +82,38 @@ function DateSelector({startdate, onDateChange}) {
         }
     })
 
+    const [{ dater }, springDate] = useSpring(() => ({ dater: startdate.getTime()}))
+
+    useEffect(() => {
+      console.log(startdate.toJSON())
+
+      springDate({ 
+        to: {
+          dater: startdate.getTime(), 
+            // dater: date.getTime()
+        },
+        // config: { velocity: scale(direction, velocity*step), decay: true},
+        // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
+        // onFrame: ()=>{console.log('xy: '+xy.getValue())},
+        // config: config.gentle,
+        // immediate: true,
+        onFrame: ()=>{
+            // console.log(zoomer)
+            // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+            let _date = new Date(dater.value)
+            setScaledate(_date)
+            onDateChange(_date)
+            setNewstart(_date)
+      
+        }
+    })
+
+      // setScaledate(startdate)
+      // onDateChange(startdate)
+      // setNewstart(startdate)
+  },[startdate])
+
+  
 
     return (
         <div className="Mask"  >
