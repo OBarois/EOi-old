@@ -34,7 +34,8 @@ function DateSelector({startdate, onDateChange}) {
         
             let steparea = 0
             let step = 1
-            let Xoffset = selector.current.parentElement.offsetWidth - event.clientX
+            // console.log(event)
+            let Xoffset = selector.current.parentElement.offsetWidth - event.pageX
             if (Xoffset > selector.current.offsetWidth) steparea = 1
             if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
             

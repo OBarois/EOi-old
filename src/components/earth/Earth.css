@@ -1,8 +1,8 @@
 .Earth {
   position: fixed;
-  top: 5%;
-  left:50%;
-  width: 300px;
+  top: 30%;
+  left:20px;
+  width: 280px;
   height: 200px;
   background: rgba(157, 82, 219, 0.2);
   border-radius: 8px;
