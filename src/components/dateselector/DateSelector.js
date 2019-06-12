@@ -11,9 +11,14 @@ function DateSelector({startdate, onDateChange}) {
     const STEPS = [ 1000*60*60 , 1000*60*1.8, 1000*60*60*24]
 
     const selector = useRef()
+    const offset = useRef()
+    const refscaledate = useRef()
+    refscaledate.current = startdate
+    // offset.current=[0,0]
+    
     const [scaledate, setScaledate ] = useState(startdate)
     const [newstart, setNewstart ] = useState(startdate)
-    const [offset, setOffset ] = useState([0,0])
+    // const [offset, setOffset ] = useState([0,0])
     // const [step, setStep ] = useState(1)
 
     // zoomfactor: how long is a pixel in ms
@@ -25,7 +30,7 @@ function DateSelector({startdate, onDateChange}) {
 
     const bind = useGesture({
 
-        onDrag: ({ active, event, cancel, down, delta, velocity, direction, temp = {
+        onDrag: ({ active, event, first, down, delta, velocity, direction, temp = {
             xy: xy.getValue(),
             laststeparea: 0,
             deltaoffset: [0,0]
@@ -50,21 +55,24 @@ function DateSelector({startdate, onDateChange}) {
                 temp.laststeparea = steparea
                 temp.xy = [0,0]
                 temp.deltaoffset = delta
+                // offset.current = delta
                 // setOffset(delta)
                 
             } 
-            
+            // offset.current = delta
             // if (Xoffset > selector.current.offsetWidth) {
             //     setStep(10)
             // } else {
             //     setStep(1)
             // }
+            if (!down) offset.current = [0,0]
 
             velocity = (velocity<.1)?0:velocity  
             // console.log(sub(delta,temp.deltaoffset)+ '    xy: '+temp.xy) 
+            // console.log(offset.current)
             set({ 
-                xy: add(scale(sub(delta,temp.deltaoffset),step), temp.xy), 
-                // xy: add(scale(sub(delta,offset),step), temp.xy), 
+                // xy: add(scale(sub(delta,temp.deltaoffset),step), temp.xy), 
+                xy: add(add(scale(sub(delta,temp.deltaoffset),step), temp.xy),offset.current), 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity*step), decay: true},
                 // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
@@ -75,32 +83,46 @@ function DateSelector({startdate, onDateChange}) {
                     let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
                     onDateChange(newdate)
                     setScaledate(newdate)
+                    refscaledate.current = newdate
+                    // offset.current = [0,0]
                 },
                 // onFrame: ()=>{onDateChange( olddate => new Date(olddate.getTime() + xy.getValue()[1] * 1000))},
                 // onFrame: setLiveDate(),
                 onRest: ()=>{
                     //   console.log(' finalxy: '+xy.getValue())
+                    // console.log('offset: '+offset.current)
                     // onDateChange(new Date(startdate.getTime() - xy.getValue()[1] * zoomfactor))
+                    // offset.current = [0,0]
                 }
             })
             return temp
         }
     })
 
-    const [{ dater }, springDate] = useSpring(() => ({ dater: startdate.getTime()}))
+    const [{ dater }, springDate] = useSpring( () => ({ dater: refscaledate.current.getTime()}))
 
     useEffect(() => {
         console.log('will spring from: '+scaledate.toJSON()+' to: '+startdate.toJSON())
+        // console.log('will spring from: '+refscaledate.current.toJSON()+' to: '+startdate.toJSON())
+        // console.log(offset.current)
+        if(offset.current) {
+            offset.current[1] -= (startdate.getTime() - scaledate.getTime())  / zoomfactor
+        } else {
+            offset.current = [0,0 ]
+        }
+        console.log((startdate.getTime() - scaledate.getTime())  / zoomfactor)
 
         springDate({ 
             from: {
-                dater: scaledate.getTime()
+                // dater: scaledate.getTime() 
+                dater: refscaledate.current.getTime()
+                // dater: 10
             },
             to: {
                 dater: startdate.getTime(), 
                 // dater: date.getTime()
             },
-            config: {  duration: 500},
+            config: {  duration: 200},
             // config: { velocity: 10, decay: true},
             // config: { mass: 10, tension: 20 , friction: 40, precision: 1000 },
             // onFrame: ()=>{console.log('xy: '+xy.getValue())},
@@ -112,6 +134,8 @@ function DateSelector({startdate, onDateChange}) {
                 let _date = new Date(dater.value)
                 setScaledate(_date)
                 onDateChange(_date)
+                // offset.current = [0,(startdate.getTime() - dater.value)  / zoomfactor]
+                // console.log(offset.current)
                 // setNewstart(_date)
             },
             onRest: ()=>{

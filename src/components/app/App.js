@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import logo from '../../assets/images/logo.svg';
 import './App.css'
 import Earth from '../earth'
@@ -11,14 +11,29 @@ function App() {
     const [viewdate, setViewdate] = useState(initdate)
     const [startdate, setStartdate] = useState(initdate)
     const [searching, setSearching] = useState(false)
+    const [counting, setCounting] = useState(false)
 
+    const refcounter = useRef()
+    const refdatecount = useRef()
     
-    const incrementDate = () => {
-      console.log(' increment date')
-      let _date = new Date(startdate.getTime()+1000*60*60*24)
-      setStartdate(_date )
+    const togglecounter = () => {
+        console.log('counter: '+counting)
+        if(!counting) {
+            refdatecount.current = new Date(viewdate.getTime())
+            refcounter.current = setInterval( () => {
+                console.log(refdatecount.current.toJSON())
+                let _newdate = new Date(refdatecount.current.getTime()+100000)
+                setStartdate(_newdate )  
+                refdatecount.current = _newdate
+            }, 100)
+            setCounting(true)
+  
+        } else {
+            clearInterval(refcounter.current)
+            setCounting(false)
+        }
     }
-    useHotkeys("t",incrementDate)  
+    useHotkeys("t",togglecounter)  
 
     const changeDate = (newdate) => {
         // console.log('Date increment: ' +newdate)
