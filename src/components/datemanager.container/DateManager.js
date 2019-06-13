@@ -8,32 +8,43 @@ function DateManager({startdate, onDateChange, searching}) {
 
     
 
-    const [currentdate, setCurrentDate] = useState(startdate)
-    const [labeldate, setLabelDate] = useState(startdate)
+  const [selectorStartdate, setselectorStartdate] = useState(startdate)
+  const [controllerStartdate, setscontrollerStartdate] = useState(startdate)
+  const [labeldate, setLabelDate] = useState(startdate)
 
     const handleClick = (increment) => {
       let newdate =  new Date(labeldate.getTime()+increment)
       console.log('Change startdate: '+newdate.toJSON())
       // setViewdate(newdate)
-      setCurrentDate(newdate)
+      setselectorStartdate(newdate)
   }
 
-  const handleChange = (date) => {
+  const handleSelectorDateChange = (date) => {
+    // console.log('handleSelectorDateChange')
+
     setLabelDate(date)
     onDateChange(date)
+  }
+  const handleControllerDateChange = (date) => {
+    console.log('handleControllerDateChange')
+    // setLabelDate(date)
+    // onDateChange(date)
+    setselectorStartdate(date)
+
+    // setselectorStartdate(date)
   }
 
   useEffect(() => {
     console.log('startdate in date manager: '+startdate.toJSON())
-    setCurrentDate(startdate)
+    setselectorStartdate(startdate)
   },[startdate])
 
 
     return (
         <div >
-          {/* <DateController onDateChange={handleClick}/> */}
+          <DateController startdate={controllerStartdate} onDateChange={handleControllerDateChange}/>
           <DateLabel date={labeldate} highlight='none' animated={searching}/>
-          <DateSelector startdate={currentdate} onDateChange={handleChange}/>
+          <DateSelector startdate={selectorStartdate} onDateChange={handleSelectorDateChange}/>
         </div>
     ) 
 }
