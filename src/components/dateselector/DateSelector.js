@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useLayoutEffect, useRef} from 'react';
 import {useSpring, animated, config} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
@@ -8,7 +8,7 @@ import './DateSelector.css';
 
 function DateSelector({startdate, onDateChange}) {
 
-    const STEPS = [ 1000*60*60 , 1000*60*1.8, 1000*60*60*24]
+    const STEPS = [ 1000*60*60 , 1000*60*10, 1000*60*1.8, 1000*27, 1000*60*60*24]
 
     const selector = useRef()
     const offset = useRef()
@@ -37,37 +37,31 @@ function DateSelector({startdate, onDateChange}) {
             deltaoffset: [0,0]
             }
         }) => {
-        
-            let steparea = 0
-            let step = 1
             let Xoffset = selector.current.parentElement.offsetWidth - event.pageX
-            if (Xoffset > selector.current.offsetWidth) steparea = 1
-            if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
+            let steparea = Math.min(STEPS.length-1,Math.floor((Xoffset-selector.current.offsetWidth)/100+1))
+            steparea = (steparea > STEPS.length-1)?STEPS.length:steparea
+            steparea = (steparea < 0)?0:steparea
+            // console.log(steparea)
+            let step = 1
             
-            // if (Xoffset > selector.current.offsetWidth) {
-            //     setZoomfactor(1000*60*60*24*(selector.current.offsetWidth-Xoffset)/150)
-            // }
+            // if (Xoffset > selector.current.offsetWidth) steparea = 1
+            // if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
+
+            for ( let i = 0 ; i < STEPS.length ; i++ ) {
+
+            }
+            
             if (steparea !== temp.laststeparea) {
-                // step = Xoffset * 0.6
                 
                 setZoomfactor(STEPS[steparea])
                 setNewstart(scaledate)
                 temp.laststeparea = steparea
                 temp.xy = [0,0]
                 temp.deltaoffset = delta
-                // offset.current = delta
-                // setOffset(delta)
                 
             } 
 
-            // console.log(first)
             if (first) setActive(true)
-            // offset.current = delta
-            // if (Xoffset > selector.current.offsetWidth) {
-            //     setStep(10)
-            // } else {
-            //     setStep(1)
-            // }
             if (!down) offset.current = [0,0]
 
             velocity = (velocity<.1)?0:velocity  
@@ -107,11 +101,11 @@ function DateSelector({startdate, onDateChange}) {
 
  const [{ dater }, springDate] = useSpring( () => ({ dater: refscaledate.current.getTime()}))
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if(!offset.current) offset.current = [0,0 ]
   if(!active) {
     offset.current[1] -= (startdate.getTime() - scaledate.getTime())  / zoomfactor
-    console.log('will spring from: '+scaledate.toJSON()+' to: '+startdate.toJSON())
+    // console.log('will spring from: '+scaledate.toJSON()+' to: '+startdate.toJSON())
     // console.log('will spring from: '+refscaledate.current.toJSON()+' to: '+startdate.toJSON())
     // console.log(offset.current)
     // console.log((startdate.getTime() - scaledate.getTime())  / zoomfactor)
@@ -119,7 +113,7 @@ function DateSelector({startdate, onDateChange}) {
     springDate({ 
         from: {
             // dater: scaledate.getTime() 
-            dater: refscaledate.current.getTime() + 100000
+            dater: refscaledate.current.getTime()
             // dater: 10
         },
         to: {
@@ -127,7 +121,7 @@ function DateSelector({startdate, onDateChange}) {
             // dater: date.getTime()
         },
         reset: true,
-        config: {  duration: 200},
+        config: {  duration: 30},
         // config: { velocity: 10, decay: true},
         // config: { mass: 10, tension: 20 , friction: 40, precision: 1000 },
         // onFrame: ()=>{console.log('xy: '+xy.getValue())},
@@ -144,7 +138,7 @@ function DateSelector({startdate, onDateChange}) {
             // setNewstart(_date)
         },
         onRest: ()=>{
-            console.log('Finished')
+            // console.log('Finished')
         }
     })
   }

@@ -34,11 +34,18 @@ function DateController({startdate, onDateChange}) {
     // }
 
     useEffect(() => {
-        console.log("date from useClock: "+new Date(date).toJSON())
+        // console.log("date from useClock: "+new Date(date).toJSON())
         onDateChange(new Date(date))
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[date]);
+
+    useEffect(() => {
+        // console.log("date from useClock: "+new Date(date).toJSON())
+        forceDate(startdate.getTime())
+        //forceDate(date)
+        //setAppdate({appdate: new Date(date)})
+    },[startdate]);
 
     // useEffect(() => {
     //     //console.log("useEffect (appdate) in ClockController")

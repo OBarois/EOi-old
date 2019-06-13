@@ -12,30 +12,22 @@ function DateManager({startdate, onDateChange, searching}) {
   const [controllerStartdate, setscontrollerStartdate] = useState(startdate)
   const [labeldate, setLabelDate] = useState(startdate)
 
-    const handleClick = (increment) => {
-      let newdate =  new Date(labeldate.getTime()+increment)
-      console.log('Change startdate: '+newdate.toJSON())
-      // setViewdate(newdate)
-      setselectorStartdate(newdate)
-  }
 
   const handleSelectorDateChange = (date) => {
-    // console.log('handleSelectorDateChange')
+    // console.log('handleSelectorDateChange:' + date.toJSON())
 
     setLabelDate(date)
     onDateChange(date)
+    setscontrollerStartdate(date)
   }
+  
   const handleControllerDateChange = (date) => {
-    console.log('handleControllerDateChange')
-    // setLabelDate(date)
-    // onDateChange(date)
+    // console.log('handleControllerDateChange' + date.toJSON())
     setselectorStartdate(date)
-
-    // setselectorStartdate(date)
   }
 
   useEffect(() => {
-    console.log('startdate in date manager: '+startdate.toJSON())
+    // console.log('startdate in date manager: '+startdate.toJSON())
     setselectorStartdate(startdate)
   },[startdate])
 

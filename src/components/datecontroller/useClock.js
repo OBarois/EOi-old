@@ -11,7 +11,7 @@ export function useClock({ autoStart, duration, startdate }) {
     const ldate = useRef();
 
     // refresh rate in msec
-    const refreshRate = 50
+    const refreshRate = 200
 
     function incrementDate(step) {
         //setDate(prevDate => { return prevDate + step  });
@@ -79,8 +79,8 @@ export function useClock({ autoStart, duration, startdate }) {
 
     // didMount effect
     useEffect(() => {
-        setDate((new Date()).getTime())
-        ldate.current = date
+        // setDate((new Date()).getTime())
+        ldate.current = new Date().getTime()
         if (autoStart) {
             start();
         }

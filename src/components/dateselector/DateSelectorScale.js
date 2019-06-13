@@ -16,10 +16,13 @@ function DateSelectorScale({date, zoomfactor}) {
     // },[date])
         
     const scaleText = (startdate, _zoom) => {
-        console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
+        // console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
         if(!scale.current) return
             
         const monthcode = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+        const isEven = num => ((num % 2) == 0) ? true : false;
+
+
         let day, month, hour, year = 0
         let lastday =0
         let lastmonth = 0
@@ -27,8 +30,9 @@ function DateSelectorScale({date, zoomfactor}) {
         let tics = []    
         let putmonth = (_zoom < 1000*60*60*24*10)
         let putday = (_zoom < 1000*60*60*2)
-        let puthour = (_zoom < 1000*60*10)
-        // console.log(startdate.toJSON())
+        let putevenhour = (_zoom < 1000*60*20)
+        let puthour = (_zoom < 1000*60*8)
+        // console.log('  zoom: '+((_zoom*10)/(1000*60*60*24) ) +'  puthour: '+puthour+'  putday: '+putday+'  putmonth: '+putmonth+'  putevenhour: '+putevenhour)
         let lastpos = 0
         for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
             let refdate = new Date( (i- scale.current.offsetHeight/2) * _zoom + startdate.getTime()  )
@@ -37,15 +41,16 @@ function DateSelectorScale({date, zoomfactor}) {
             hour = refdate.getUTCHours()
             year = refdate.getUTCFullYear()
 
-            if (puthour) {
-                if(hour != lasthour && puthour) {
-                    if (hour != 0) {
+            if (putevenhour) {
+                if(hour != lasthour) {
+                    if (hour != 0 &&  (isEven(hour) || puthour)) {
                         tics.push({class:'HourTic', pos: i, label: hour})
                     } else  {
-                        // tics.push({class:'DayTic', pos: i, label: day})
-                        tics.push({class:'DayTic', pos: i, label: day})
-                        tics.push({class:'MonthTic', pos: i, label: month})
-                        tics.push({class:'YearTic', pos: i, label: year})        
+                        if (hour == 0) {
+                            tics.push({class:'DayTic', pos: i, label: day})
+                            tics.push({class:'MonthTic', pos: i, label: month})
+                            tics.push({class:'YearTic', pos: i, label: year})            
+                        }
                     }
                 }
     
@@ -93,13 +98,8 @@ function DateSelectorScale({date, zoomfactor}) {
         set({ 
             to: {
                 zoomer: zoomfactor, 
-                // dater: date.getTime()
             },
-            // config: { velocity: scale(direction, velocity*step), decay: true},
-            // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
-            // onFrame: ()=>{console.log('xy: '+xy.getValue())},
-            // config: config.gentle,
-            // immediate: true,
+            config: {  duration: 400},
             onFrame: ()=>{
                 // console.log(zoomer)
                 // setTimescale(scaleText(new Date(dater.value),zoomer.value))

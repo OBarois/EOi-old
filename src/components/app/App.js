@@ -6,54 +6,23 @@ import DateManager from '../datemanager.container'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 function App() {
-
+    
     let initdate = new Date()
     const [viewdate, setViewdate] = useState(initdate)
     const [startdate, setStartdate] = useState(initdate)
     const [searching, setSearching] = useState(false)
-    // const [counting, setCounting] = useState(false)
-
-    // const refcounter = useRef()
-    // const refdatecount = useRef()
-    
-    // const togglecounter = () => {
-    //     console.log('counter: '+counting)
-    //     if(!counting) {
-    //         refdatecount.current = new Date(viewdate.getTime())
-    //         refcounter.current = setInterval( () => {
-    //             console.log(refdatecount.current.toJSON())
-    //             let _newdate = new Date(refdatecount.current.getTime()+10000)
-    //             setStartdate(_newdate )  
-    //             refdatecount.current = _newdate
-    //         }, 100)
-    //         setCounting(true)
-  
-    //     } else {
-    //         clearInterval(refcounter.current)
-    //         setCounting(false)
-    //     }
-    // }
-    // useHotkeys("c",togglecounter)  
-    // useHotkeys("s",()=>setSearching(searching=>!searching))
 
     const changeDate = (newdate) => {
-        // console.log('Date increment: ' +newdate)
+        // console.log('App changeDate callback: ' + newdate.toJSON())
         setViewdate(newdate)
-        // refdatecount.current = newdate
     }
-    // const handleClick = () => {
-    //     let newdate =  new Date(viewdate.getTime()+1000*60*60*24)
-    //     console.log('Change startdate: '+newdate.toJSON())
-    //     // setViewdate(newdate)
-    //     setStartdate(newdate)
-    // }
 
     useEffect(() => {
-        console.log('Initial viewdate: '+viewdate.toJSON())
+        // console.log('Initial viewdate: '+viewdate.toJSON())
     },[])
       
     useEffect(() => {
-        console.log('startdate changed to: '+startdate.toJSON())
+        // console.log('startdate changed to: '+startdate.toJSON())
     },[startdate])
     
 
