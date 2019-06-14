@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import DateLabel from '../datelabel'
 import DateController from '../datecontroller'
 import DateSelector from '../dateselector'
+import { useHotkeys } from 'react-hotkeys-hook'
+
 
 
 function DateManager({startdate, onDateChange, searching}) {
@@ -12,13 +14,23 @@ function DateManager({startdate, onDateChange, searching}) {
   const [controllerStartdate, setscontrollerStartdate] = useState(startdate)
   const [labeldate, setLabelDate] = useState(startdate)
 
+  const increment = () => {
+    let _date = 
+    setInterval(
+      setselectorStartdate(new Date(selectorStartdate.getTime()+ 36000000)),
+      100
+    )
+
+  }
+  useHotkeys("a",increment)
+  
 
   const handleSelectorDateChange = (date) => {
     // console.log('handleSelectorDateChange:' + date.toJSON())
 
     setLabelDate(date)
     onDateChange(date)
-    setscontrollerStartdate(date)
+    // setscontrollerStartdate(date)
   }
   
   const handleControllerDateChange = (date) => {
@@ -30,6 +42,7 @@ function DateManager({startdate, onDateChange, searching}) {
     // console.log('startdate in date manager: '+startdate.toJSON())
     setselectorStartdate(startdate)
   },[startdate])
+
 
 
     return (

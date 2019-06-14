@@ -8,7 +8,7 @@ function DateSelectorScale({date, zoomfactor}) {
     const [start, setStart] = useState(date)    
     const [active, setActive] = useState(false)    
     const [timescale, setTimescale] = useState('')    
-    const [zoom, setZoom] = useState(zoomfactor)    
+    // const [zoom, setZoom] = useState(zoomfactor)    
 
 
     // useEffect(() => {     
@@ -91,7 +91,7 @@ function DateSelectorScale({date, zoomfactor}) {
     // },[date])
 
 
-    const [{ zoomer }, set] = useSpring(() => ({ zoomer: zoom}))
+    const [{ zoomer }, set] = useSpring(() => ({ zoomer: zoomfactor}))
     useLayoutEffect(() => {
         // console.log('from: '+start.getTime()+'  to: '+date.getTime())
         

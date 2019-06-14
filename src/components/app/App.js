@@ -1,16 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react';
-import logo from '../../assets/images/logo.svg';
+import React, {useState, useEffect} from 'react';
 import './App.css'
 import Earth from '../earth'
 import DateManager from '../datemanager.container'
-import { useHotkeys } from 'react-hotkeys-hook'
 
 function App() {
     
     let initdate = new Date()
     const [viewdate, setViewdate] = useState(initdate)
-    const [startdate, setStartdate] = useState(initdate)
-    const [searching, setSearching] = useState(false)
+    const [startdate, ] = useState(initdate)
+    const [searching, ] = useState(false)
 
     const changeDate = (newdate) => {
         // console.log('App changeDate callback: ' + newdate.toJSON())

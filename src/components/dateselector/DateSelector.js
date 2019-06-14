@@ -37,8 +37,10 @@ function DateSelector({startdate, onDateChange}) {
             deltaoffset: [0,0]
             }
         }) => {
-            let Xoffset = selector.current.parentElement.offsetWidth - event.pageX
+            let Xoffset = selector.current.parentElement.offsetWidth - (event.pageX?event.pageX:selector.current.parentElement.offsetWidth)
             let steparea = Math.min(STEPS.length-1,Math.floor((Xoffset-selector.current.offsetWidth)/100+1))
+            // if (!steparea) { steparea = 0}
+
             steparea = (steparea > STEPS.length-1)?STEPS.length:steparea
             steparea = (steparea < 0)?0:steparea
             // console.log(steparea)
@@ -126,7 +128,7 @@ function DateSelector({startdate, onDateChange}) {
         // config: { mass: 10, tension: 20 , friction: 40, precision: 1000 },
         // onFrame: ()=>{console.log('xy: '+xy.getValue())},
         // config: config.gentle,
-        // immediate: true,
+        immediate: true,
         onFrame: ()=>{
             // console.log(zoomer)
             // setTimescale(scaleText(new Date(dater.value),zoomer.value))

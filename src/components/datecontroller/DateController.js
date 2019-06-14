@@ -23,7 +23,7 @@ function DateController({startdate, onDateChange}) {
 
 
     useHotkeys("t",togglePause)
-    useHotkeys("r",reset)
+    useHotkeys("r",()=>{reset() })
     useHotkeys(".",increaseSpeed)
     useHotkeys(",",decreaseSpeed)
 
@@ -34,14 +34,14 @@ function DateController({startdate, onDateChange}) {
     // }
 
     useEffect(() => {
-        // console.log("date from useClock: "+new Date(date).toJSON())
+        console.log("date from useClock: "+new Date(date).toJSON())
         onDateChange(new Date(date))
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[date]);
 
     useEffect(() => {
-        // console.log("date from useClock: "+new Date(date).toJSON())
+        console.log("date from datemanager: "+new Date(date).toJSON())
         forceDate(startdate.getTime())
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
@@ -56,7 +56,7 @@ function DateController({startdate, onDateChange}) {
 
 
     return (
-        <div className='DateController' onClick={reset}/>
+        <div className='DateController' onClick={togglePause}/>
     )
 }
 export default DateController
