@@ -1,4 +1,4 @@
-import React, {useEffect, usestate} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useClock } from "./useClock"
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -45,16 +45,20 @@ function DateController({startdate, onDateChange}) {
         //setAppdate({appdate: new Date(date)})
     },[startdate]);
 
-    // useEffect(() => {
-    //     //console.log("useEffect (appdate) in ClockController")
-    //     //setAppdate(date)
-    //     forceDate(startdate.getTime())
-    //     //setAppdate({appdate: new Date(date)})
-    // },[startdate]);
+    const [lastTap, setLasttap] = useState()
+    const handleDoubleTap = () => {
+        const now = Date.now();
+        if (lastTap && (now - lastTap) < 300) {
+          reset();
+        } else {
+            setLasttap(now)
+            togglePause()
+        }
+      }
 
 
     return (
-        <div className='DateController' onClick={togglePause}/>
+        <div className='DateController' onClick={handleDoubleTap}/>
     )
 }
 export default DateController

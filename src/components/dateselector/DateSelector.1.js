@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import {useSpring, animated, config} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
@@ -12,7 +12,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     const selector = useRef()
     const offset = useRef()
-    if(!offset.current) offset.current = [0, 0 ]
     // offset.current = [0, 0 ]
     const reflastscaledate = useRef()
     const refscaledate = useRef()
@@ -30,11 +29,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
     // zoomfactor: how long is a pixel in ms
     const [zoomfactor, setZoomfactor ] = useState(STEPS[0])
     const [scalezoom, setScalezoom ] = useState(zoomfactor)
-    const [immediate, setImmediate ] = useState(false)
 
 
-    const [{ xy }, set] = useSpring(() => ({ xy: [0,0] }))
-    // console.log('just defined spring: '+ offset.current)
+    const [{ xy }, set] = useSpring(() => ({ xy: [0, 0] }))
+
     if(!refscaledate.current) {
         console.log('reset refscaledate')
         refscaledate.current = startdate
@@ -50,7 +48,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             }
         }) => {
             let Xoffset = selector.current.parentElement.offsetWidth - (event.pageX?event.pageX:selector.current.parentElement.offsetWidth)
-            console.log(selector.current.parentElement.offsetWidth +'    '+event.pageX)
             let steparea = Math.min(STEPS.length-1,Math.floor((Xoffset-selector.current.offsetWidth)/100+1))
             // if (!steparea) { steparea = 0}
 
@@ -58,10 +55,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             steparea = (steparea < 0)?0:steparea
             // console.log(steparea)
             let step = 1
-            // console.log(offset.current)
+            console.log(offset.current)
             // if (Xoffset > selector.current.offsetWidth) steparea = 1
             // if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
-            
+
             for ( let i = 0 ; i < STEPS.length ; i++ ) {
 
             }
@@ -77,9 +74,13 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             } 
 
             if (first) setActive(true)
+            if (!down) {
+                console.log('resetting offset')
+                offset.current = [0,0]
+            }
 
-            velocity = (Math.abs(velocity)<.2)?0:velocity  
-            // console.log('velocity '+velocity) 
+            velocity = (velocity<.1)?0:velocity  
+            // console.log(sub(delta,temp.deltaoffset)+ '    xy: '+temp.xy) 
             
             set({ 
                 // xy: add(scale(sub(delta,temp.deltaoffset),step), temp.xy), 
@@ -94,7 +95,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                     let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
                     onDateChange(newdate)
                     setScaledate(newdate)
-                    setlLastStartdate(newdate)
                     refscaledate.current = newdate
                     // offset.current = [0,0]
                 },
@@ -102,12 +102,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 // onFrame: setLiveDate(),
                 onRest: ()=>{
                     if (!down) {
-                        // setTimeout(()=>setActive(false),1)
-                        setActive(false)
+                        setTimeout(()=>setActive(false),800)
+                        // setActive(false)
                         let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
                         onFinalDateChange(newdate)
-                        offset.current = [0,0]
-
                     }
                 }
             })
@@ -116,24 +114,89 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
     })
 
 
+
+    // const [{ dater }, springDate] = useSpring( () => ({ dater: refscaledate.current.getTime()}))
+    const [{ dater }, springDate] = useSpring( () => ({ dater: scaledate.getTime()}))
+    // console.log('just defined spring: '+ scaledate.toJSON())
+
+    useLayoutEffect(() => {
+        if(!offset.current) offset.current = [0, 0 ]
+        if(!active) {
+
+            // setActive(true)
+            offset.current[1] -= (startdate.getTime() - lastStartdate.getTime())  / zoomfactor
+            setlLastStartdate(startdate)
+            console.log('will spring from: '+refscaledate.current.toJSON()+' to: '+startdate.toJSON() + ' offset: '+ offset.current[1])
+            // console.log((startdate.getTime() - scaledate.getTime())  / zoomfactor)
+
+            springDate({ 
+                // from: {
+                //     // dater: scaledate.getTime()
+                //     // dater: refscaledate.current.getTime()
+                //     dater: 10
+                // },
+                to: {
+                    dater: startdate.getTime(), 
+                    // dater: date.getTime()
+                },
+                // reset: true,
+                config: {  duration: 1000},
+                // config: { velocity: 10, decay: true},
+                // config: { mass: 10, tension: 20 , friction: 40, precision: 1000 },
+                // onFrame: ()=>{console.log('xy: '+xy.getValue())},
+                // config: config.gentle,
+                immediate: false,
+                onFrame: ()=>{
+                    // console.log(zoomer)
+                    // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                    // let _date = new Date(dater.value)
+                    setScaledate(new Date(dater.value))
+                    // onDateChange(_date)
+                    // offset.current = [0,(startdate.getTime() - dater.value)  / zoomfactor]
+                    // console.log(_date.toJSON())
+                    // setNewstart(_date)
+                },
+                onRest: ()=>{
+                    onDateChange(new Date(dater.value))
+                    // offset.current = [0,0]
+                    // setActive(false)
+                    // console.log('Finished')
+                }
+            })
+        }
+
+    },[startdate])
+
+    const [{ zoomer }, springZoom] = useSpring(() => ({ zoomer: zoomfactor}))
+    useLayoutEffect(() => {
+        console.log('zoomfactor: '+zoomfactor+'  to: '+scaledate.toJSON())
+        
+        springZoom({ 
+            to: {
+                zoomer: zoomfactor, 
+            },
+            config: {  duration: 400},
+            onFrame: ()=>{
+                // console.log(zoomer.value+'/ '+scaledate.toJSON())
+                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                // setTimescale(scaleText(scaledate,zoomer.value))
+                setScalezoom(zoomer.value)
+            }
+        })
+
+    },[zoomfactor])
+
     useEffect(() => {
         // if(!active) onFinalDateChange(scaledate)  
-        
-        if(!active) {
-            offset.current[1] -= (startdate.getTime() - lastStartdate.getTime())  / zoomfactor
-            // console.log(offset.current[1]+ ' /  '+ (startdate.getTime() - lastStartdate.getTime()))
-            setScaledate(startdate)
-            setlLastStartdate(startdate)
-            onDateChange(startdate)
-        }
-    },[startdate])
+        console.log(active)
+    },[active])
 
 
     return (
         <animated.div {...bind()} className='DateSelector' ref={selector} >
             <div className="Mask"  >
 
-                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active}></DateSelectorScale>
+                <DateSelectorScale className='scale' date={scaledate} zoomfactor={scalezoom}></DateSelectorScale>
                 
                 <div className="TriangleContainer" >
                     <svg height="40" width="20" className="Triangle">

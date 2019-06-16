@@ -1,12 +1,58 @@
-import React from 'react';
-import './Earth.css';
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import './Earth.css'
+import { useEww } from "./useEww"
+import { useHotkeys } from 'react-hotkeys-hook'
 
-function Earth(props) {
-  return (
-    <div className="Earth">
-      {'Earth: ' + props.viewdate.toJSON()}
-    </div>
-  );
+
+
+
+
+
+function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) {
+
+    const {
+        ewwstate,
+        addGeojson,
+        removeGeojson,
+        addWMS,
+        toggleProjection,
+        toggleAtmosphere,
+        toggleStarfield,
+        toggleNames,
+        setTime
+    } = useEww({
+        id: id,
+        clat: clat,
+        clon: clon,
+        alt: alt,
+        starfield: starfield,
+        atmosphere: atmosphere,
+        names: names
+    })
+
+    useHotkeys("p",toggleProjection)  
+    useHotkeys("a",toggleAtmosphere)  
+    useHotkeys("s",toggleStarfield)  
+    useHotkeys("n",toggleNames)  
+    useHotkeys("c",removeGeojson)
+
+    useEffect(() => {
+        setTime(viewdate.getTime())
+    },[viewdate])
+
+
+
+    let globeStyle = {
+        background: 'inherit',
+        position: "fixed",
+        left: 0,
+        width: '100%',
+        height: '100%'
+    };
+        
+    return (
+            <canvas id={id} style={globeStyle} />
+    );
 }
 
 export default Earth

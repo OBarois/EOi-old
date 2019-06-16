@@ -11,13 +11,13 @@ export function useClock({ autoStart, duration, initdate }) {
     // let initDate = startdate
     const [date, setDate] = useState(initdate)
     const [playing, setPlaying] = useState(false)
-    // const [step, setStep] = useState(200)
+    const [stepstate, setStepstate] = useState(1000*60*60)
     // const [refreshrate, setrefreshrate] = useState(200)
     
     const step = useRef() 
     const refreshrate = useRef() 
-    step.current = 1000*60*60
-    refreshrate.current = 1500
+    // step.current = 1000*60*60
+    refreshrate.current = 200
     
     const ldate = useRef()
 
@@ -41,12 +41,17 @@ export function useClock({ autoStart, duration, initdate }) {
     //     })
     // }
     function increaseSpeed() {
+        // stop()
         step.current = (step.current > 0)? step.current *= 2:step.current /= 2
         if(Math.abs(step.current) < refreshrate.current) step.current = refreshrate.current
+        console.log('step: '+step.current)
+        // setStepstate((st)=>st*2)
+        // start()
     }
     function decreaseSpeed() {
         step.current = (step.current > 0)? step.current /= 2:step.current *= 2
         if(Math.abs(step.current) < refreshrate.current) step.current = -1 * refreshrate.current
+        // setStepstate((st)=>st/2)
     }
 
     function togglePause() {
@@ -59,6 +64,7 @@ export function useClock({ autoStart, duration, initdate }) {
     
     function start() {
         console.log('start clock')
+        if(!step.current) step.current = 1000*60*60
         intervalRef.current = setInterval( ()=>{
             ldate.current += step.current
             setDate(new Date(ldate.current))
@@ -75,6 +81,10 @@ export function useClock({ autoStart, duration, initdate }) {
     
 
     function reset() {
+        stop()
+        ldate.current = new Date().getTime()
+        setDate(new Date(ldate.current))
+
     }
 
      
@@ -100,6 +110,7 @@ export function useClock({ autoStart, duration, initdate }) {
             ldate.current = initdate.getTime()
         }  
     }, [initdate])
+
 
 
     // didMount effect

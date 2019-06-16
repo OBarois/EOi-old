@@ -1,8 +1,8 @@
 import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
-import {useSpring, animated} from 'react-spring'
+import {useSpring} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale({date, zoomfactor, immediate}) {
+function DateSelectorScale1({date, zoomfactor}) {
 
     const scale = useRef()
     const [start, setStart] = useState(date)    
@@ -86,55 +86,34 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
         return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))
     }
 
+    useLayoutEffect(() => {
+        setTimescale(scaleText(date,zoomfactor))
+    },[date,zoomfactor])
+
+
+    // const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
     // useLayoutEffect(() => {
-    //     setTimescale(scaleText(date,zoomfactor))
-    // },[date,zoomfactor])
-
-
-    const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
-    useLayoutEffect(() => {
-        // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
+    //     console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
         
-        set({ 
-            to: {
-                zoomer: zoomfactor, 
-                dater: date.getTime()
-            },
-            config: {  duration: 400},
-            immediate: false,
-            onFrame: ()=>{
-                // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
-                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-                setTimescale(scaleText(new Date(dater.value),zoomer.value))
-            }
-        })
+    //     set({ 
+    //         to: {
+    //             zoomer: zoomfactor, 
+    //         },
+    //         config: {  duration: 400},
+    //         onFrame: ()=>{
+    //             console.log(zoomer.value+'/ '+date.toJSON())
+    //             // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+    //             setTimescale(scaleText(new Date(dater.value),zoomer.value))
+    //         }
+    //     })
 
-    },[ zoomfactor])
-
-    useLayoutEffect(() => {
-        // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
-        
-        set({ 
-            to: {
-                zoomer: zoomfactor, 
-                dater: date.getTime()
-            },
-            config: {  duration: 400},
-            immediate: immediate,
-            onFrame: ()=>{
-                // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
-                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-                setTimescale(scaleText(new Date(dater.value),zoomer.value))
-            }
-        })
-
-    },[date])
+    // },[date, zoomfactor])
 
 
     return (
-        <animated.div ref={scale} className='DateSelectorScale' >
+        <div ref={scale} className='DateSelectorScale' >
             {timescale}
-        </animated.div>
+        </div>
     )
 }
-export default DateSelectorScale
+export default DateSelectorScale1

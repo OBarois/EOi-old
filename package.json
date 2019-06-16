@@ -5,15 +5,19 @@
   "main": "src/index.js",
   "homepage": "https://obarois.github.io/reactwww",
   "dependencies": {
+    "@straw-hat/react-fullscreen": "^1.2.1",
     "babel-preset-react-app": "^7.0.0",
     "dateformat": "^3.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-full-screen": "^0.2.4",
     "react-hooks-lib": "0.0.18",
     "react-hotkeys-hook": "^1.4.0",
     "react-spring": "^8.0.22",
+    "react-use": "^9.5.0",
     "react-use-gesture": "^5.1.1",
-    "vec-la": "^1.5.0"
+    "vec-la": "^1.5.0",
+    "webworldwind-esa": "^0.10.0-alpha.3"
   },
   "devDependencies": {
     "react-scripts": "3.0.1"
