@@ -15,8 +15,8 @@ function DateSelectorScale({date, zoomfactor}) {
     //     setStart(date)
     // },[date])
         
-    const scaleText = (startdate, _zoom) => {
-        // console.log('startdate: '+startdate.toJSON()+'  zoom: '+zoom)
+    const scaleText = (_start, _zoom) => {
+        // console.log('_start: '+_start.toJSON()+'  zoom: '+_zoom)
         if(!scale.current) return
             
         const monthcode = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
@@ -35,7 +35,7 @@ function DateSelectorScale({date, zoomfactor}) {
         // console.log('  zoom: '+((_zoom*10)/(1000*60*60*24) ) +'  puthour: '+puthour+'  putday: '+putday+'  putmonth: '+putmonth+'  putevenhour: '+putevenhour)
         let lastpos = 0
         for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
-            let refdate = new Date( (i- scale.current.offsetHeight/2) * _zoom + startdate.getTime()  )
+            let refdate = new Date( (i- scale.current.offsetHeight/2) * _zoom + _start.getTime()  )
             day = refdate.getUTCDate()
             month = monthcode[refdate.getUTCMonth()]
             hour = refdate.getUTCHours()
@@ -86,28 +86,28 @@ function DateSelectorScale({date, zoomfactor}) {
         return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))
     }
 
-    // useLayoutEffect(() => {
-    //     setTimescale(scaleText(date,zoomfactor))
-    // },[date])
-
-
-    const [{ zoomer }, set] = useSpring(() => ({ zoomer: zoomfactor}))
     useLayoutEffect(() => {
-        // console.log('from: '+start.getTime()+'  to: '+date.getTime())
-        
-        set({ 
-            to: {
-                zoomer: zoomfactor, 
-            },
-            config: {  duration: 400},
-            onFrame: ()=>{
-                // console.log(zoomer)
-                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-                setTimescale(scaleText(date,zoomer.value))
-            }
-        })
+        setTimescale(scaleText(date,zoomfactor))
+    },[date,zoomfactor])
 
-    },[date, zoomfactor])
+
+    // const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
+    // useLayoutEffect(() => {
+    //     console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
+        
+    //     set({ 
+    //         to: {
+    //             zoomer: zoomfactor, 
+    //         },
+    //         config: {  duration: 400},
+    //         onFrame: ()=>{
+    //             console.log(zoomer.value+'/ '+date.toJSON())
+    //             // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+    //             setTimescale(scaleText(new Date(dater.value),zoomer.value))
+    //         }
+    //     })
+
+    // },[date, zoomfactor])
 
 
     return (

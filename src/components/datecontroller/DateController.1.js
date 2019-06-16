@@ -1,4 +1,4 @@
-import React, {useEffect, usestate} from 'react';
+import React, {useEffect} from 'react';
 import { useClock } from "./useClock"
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -18,9 +18,8 @@ function DateController({startdate, onDateChange}) {
     } = useClock({
         autoStart: false,
         duration: 600000,
-        initdate: startdate
+        startdate: startdate.getTime()
     })
-
 
 
     useHotkeys("t",togglePause)
@@ -28,19 +27,22 @@ function DateController({startdate, onDateChange}) {
     useHotkeys(".",increaseSpeed)
     useHotkeys(",",decreaseSpeed)
 
-    
 
+    // const handleClick = () => {
+    //     console.log('date controll')
+    //     onDateChange(1000*60*60*24)
+    // }
 
     useEffect(() => {
         // console.log("date from useClock: "+new Date(date).toJSON())
-        onDateChange(date)
+        onDateChange(new Date(date))
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[date]);
 
     useEffect(() => {
         // console.log("date from datemanager: "+new Date(date).toJSON())
-        // forceDate(startdate)
+        forceDate(startdate.getTime())
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[startdate]);
