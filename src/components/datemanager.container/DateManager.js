@@ -11,41 +11,12 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
     
 
     const [selectorStartdate, setselectorStartdate] = useState(startdate)
-    const [controllerStartdate, setscontrollerStartdate] = useState(startdate)
+    const [controllerStartdate, setcontrollerStartdate] = useState(startdate)
     const [labeldate, setLabelDate] = useState(startdate)
 
 
 
     const [increment, setIncrement] = useState(1000)
-    // const [ticker, setTicker] = useState( () => {
-    //     return setInterval( (selectorStartdate)=>{
-    //         setselectorStartdate( (initdate = selectorStartdate) => new Date(initdate.getTime()+ increment))
-    //     },
-    //     200
-    //     )
-    // }
-    // )
-    
-
-    // const refinterval = useRef()
-    // const refincrement = useRef(false)
-    // const increment = () => {
-    //     if (!refincrement.current) {
-    //         refinterval.current = setInterval( ()=>{
-    //             console.log('increment from '+selectorStartdate.toJSON())
-    //             setselectorStartdate(new Date(selectorStartdate.getTime()+ 1000*60*60*24))
-    //         },
-    //         1000
-    //         )
-    //         refincrement.current = true
-    //     } else {
-    //         clearInterval(refinterval.current)
-    //         refincrement.current = false
-    //     }
-    // }
-
-    // useHotkeys("a",increment)
-    
 
     const handleSelectorDateChange = (date) => {
         // console.log('handleSelectorDateChange:' + date.toJSON())
@@ -56,7 +27,7 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
 
     const handleSelectorFinalDateChange = (date) => {
         // console.log('handleSelectorFinalDateChange:' + date.toJSON())
-        setscontrollerStartdate(date)
+        setcontrollerStartdate(date)
         // onFinalDateChange(date)
 
     }
