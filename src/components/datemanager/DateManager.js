@@ -1,22 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react';
-import DateLabel from '../datelabel'
-import DateController from '../datecontroller'
-import DateSelector from '../dateselector'
-import { useHotkeys } from 'react-hotkeys-hook'
-
+import DateLabel from './components/datelabel'
+import DateController from './components/datecontroller'
+import DateSelector from './components/dateselector'
 
 
 function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
 
-    
-
     const [selectorStartdate, setselectorStartdate] = useState(startdate)
     const [controllerStartdate, setcontrollerStartdate] = useState(startdate)
     const [labeldate, setLabelDate] = useState(startdate)
-
-
-
-    const [increment, setIncrement] = useState(1000)
 
     const handleSelectorDateChange = (date) => {
         // console.log('handleSelectorDateChange:' + date.toJSON())
@@ -29,7 +21,6 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
         // console.log('handleSelectorFinalDateChange:' + date.toJSON())
         setcontrollerStartdate(date)
         // onFinalDateChange(date)
-
     }
     
     const handleControllerDateChange = (date) => {

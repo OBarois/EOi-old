@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import './App.css'
 import Earth from '../earth'
-import DateManager from '../datemanager.container'
+import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 // import useToggle from 'react-use/lib/useToggle'
@@ -31,7 +31,7 @@ function App() {
     
     const [isFull,setIsfull] = useState(false)
     const { isFullscreen, toggleFullscreen } = useFullscreen(window.document.body);
-    useHotkeys("f",toggleFullscreen)
+    useHotkeys("f",toggleFullscreen) 
 
 
     return (

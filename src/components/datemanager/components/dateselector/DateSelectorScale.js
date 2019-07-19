@@ -1,8 +1,8 @@
 import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
-import {useSpring} from 'react-spring'
+import {useSpring, animated} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale1({date, zoomfactor}) {
+function DateSelectorScale({date, zoomfactor, immediate}) {
 
     const scale = useRef()
     const [start, setStart] = useState(date)    
@@ -26,9 +26,11 @@ function DateSelectorScale1({date, zoomfactor}) {
         let day, month, hour, year = 0
         let lastday =0
         let lastmonth = 0
+        let lastyear = 0
         let lasthour = 0
         let tics = []    
-        let putmonth = (_zoom < 1000*60*60*24*10)
+        let putyear = (_zoom < 1000*60*60*24*30*10)
+        let putmonth = (_zoom < 1000*60*60*24*5)
         let putday = (_zoom < 1000*60*60*2)
         let putevenhour = (_zoom < 1000*60*20)
         let puthour = (_zoom < 1000*60*8)
@@ -76,9 +78,20 @@ function DateSelectorScale1({date, zoomfactor}) {
                     }
                 }
     
+            } else if (putyear) {
+                if(year !== lastyear && lastmonth !== 0 ) {
+                    if (month !== 'JAN') {
+                        tics.push({class:'MonthTic', pos: i, label: month})
+                    } else {
+                        // tics.push({class:'MonthTic', pos: i, label: month})
+                        tics.push({class:'YearTic', pos: i, label: year})
+                    }
+                }
+    
             }
 
             lastday = day
+            lastyear = year
             lastmonth = month
             lasthour = hour
         }
@@ -86,34 +99,55 @@ function DateSelectorScale1({date, zoomfactor}) {
         return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))
     }
 
-    useLayoutEffect(() => {
-        setTimescale(scaleText(date,zoomfactor))
-    },[date,zoomfactor])
-
-
-    // const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
     // useLayoutEffect(() => {
-    //     console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
-        
-    //     set({ 
-    //         to: {
-    //             zoomer: zoomfactor, 
-    //         },
-    //         config: {  duration: 400},
-    //         onFrame: ()=>{
-    //             console.log(zoomer.value+'/ '+date.toJSON())
-    //             // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-    //             setTimescale(scaleText(new Date(dater.value),zoomer.value))
-    //         }
-    //     })
+    //     setTimescale(scaleText(date,zoomfactor))
+    // },[date,zoomfactor])
 
-    // },[date, zoomfactor])
+
+    const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
+    useLayoutEffect(() => {
+        // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
+        
+        set({ 
+            to: {
+                zoomer: zoomfactor, 
+                dater: date.getTime()
+            },
+            config: {  duration: 400},
+            immediate: false,
+            onFrame: ()=>{
+                // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
+                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                setTimescale(scaleText(new Date(dater.value),zoomer.value))
+            }
+        })
+
+    },[ zoomfactor])
+
+    useLayoutEffect(() => {
+        // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
+        
+        set({ 
+            to: {
+                zoomer: zoomfactor, 
+                dater: date.getTime()
+            },
+            config: {  duration: 400},
+            immediate: immediate,
+            onFrame: ()=>{
+                // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
+                // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                setTimescale(scaleText(new Date(dater.value),zoomer.value))
+            }
+        })
+
+    },[date])
 
 
     return (
-        <div ref={scale} className='DateSelectorScale' >
+        <animated.div ref={scale} className='DateSelectorScale' >
             {timescale}
-        </div>
+        </animated.div>
     )
 }
-export default DateSelectorScale1
+export default DateSelectorScale

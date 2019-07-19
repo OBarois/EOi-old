@@ -1,6 +1,3 @@
-// A refaire!!!
-
-
 import { useState, useEffect, useRef } from "react";
 
 
@@ -11,7 +8,7 @@ export function useClock({ autoStart, duration, initdate }) {
     // let initDate = startdate
     const [date, setDate] = useState(initdate)
     const [playing, setPlaying] = useState(false)
-    const [stepstate, setStepstate] = useState(1000*60*60)
+    // const [stepstate, setStepstate] = useState(1000*60*60)
     // const [refreshrate, setrefreshrate] = useState(200)
     
     const step = useRef() 
@@ -69,6 +66,7 @@ export function useClock({ autoStart, duration, initdate }) {
             ldate.current += step.current
             setDate(new Date(ldate.current))
         },refreshrate.current)
+        
         setPlaying(true)
     }
     

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "src/index.js",
-  "homepage": "https://obarois.github.io/reactwww",
+  "homepage": "https://obarois.github.io/eoi",
   "dependencies": {
     "@straw-hat/react-fullscreen": "^1.2.1",
     "babel-preset-react-app": "^7.0.0",

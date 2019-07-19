@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useClock } from "./useClock"
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -9,17 +9,18 @@ function DateController({startdate, onDateChange}) {
 
     const {
         date,
-        playing,
+        // playing,
         togglePause,
         reset,
         increaseSpeed,
         decreaseSpeed,
-        forceDate
+        // forceDate
     } = useClock({
         autoStart: false,
         duration: 600000,
-        startdate: startdate.getTime()
+        initdate: startdate
     })
+
 
 
     useHotkeys("t",togglePause)
@@ -27,36 +28,37 @@ function DateController({startdate, onDateChange}) {
     useHotkeys(".",increaseSpeed)
     useHotkeys(",",decreaseSpeed)
 
+    
 
-    // const handleClick = () => {
-    //     console.log('date controll')
-    //     onDateChange(1000*60*60*24)
-    // }
 
     useEffect(() => {
         // console.log("date from useClock: "+new Date(date).toJSON())
-        onDateChange(new Date(date))
+        onDateChange(date)
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[date]);
 
     useEffect(() => {
         // console.log("date from datemanager: "+new Date(date).toJSON())
-        forceDate(startdate.getTime())
+        // forceDate(startdate)
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
     },[startdate]);
 
-    // useEffect(() => {
-    //     //console.log("useEffect (appdate) in ClockController")
-    //     //setAppdate(date)
-    //     forceDate(startdate.getTime())
-    //     //setAppdate({appdate: new Date(date)})
-    // },[startdate]);
+    const [lastTap, setLasttap] = useState()
+    const handleDoubleTap = () => {
+        const now = Date.now();
+        if (lastTap && (now - lastTap) < 300) {
+          reset();
+        } else {
+            setLasttap(now)
+            togglePause()
+        }
+      }
 
 
     return (
-        <div className='DateController' onClick={togglePause}/>
+        <div className='DateController' onClick={handleDoubleTap}/>
     )
 }
 export default DateController
