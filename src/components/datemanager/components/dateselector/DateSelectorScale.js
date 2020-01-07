@@ -11,9 +11,9 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
     // const [zoom, setZoom] = useState(zoomfactor)    
 
 
-    // useEffect(() => {     
-    //     setStart(date)
-    // },[date])
+    useEffect(() => {  
+        return () => {}          
+    })
         
     const scaleText = (_start, _zoom) => {
         // console.log('_start: '+_start.toJSON()+'  zoom: '+_zoom)
