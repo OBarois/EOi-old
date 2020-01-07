@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import WorldWind from "webworldwind-esa";
+import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
 
 
@@ -46,6 +47,34 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     const [geojsonlayers, setGeojsonlayers] = useState([])
     const [quicklooklayers, setQuicklooklayers] = useState([])
     const [ewwstate, setEwwState] = useState({latitude: clat, longitude: clon, altitude: alt, aoi:'', pickedItems: []})
+
+
+    // Turn the globe up north
+    function northUp() {
+        const wwd = eww.current
+        let headingIncrement = 1.0;
+        if (Math.abs(wwd.navigator.heading) > 60) {
+            headingIncrement = 2.0;
+        } else if (Math.abs(navigator.heading) > 120) {
+            headingIncrement = 3.0;
+        }
+        if (wwd.navigator.heading > 0) {
+            headingIncrement = -headingIncrement;
+        }
+
+        let runOperation = () => {
+            if (Math.abs(wwd.navigator.heading) > Math.abs(headingIncrement)) {
+                wwd.navigator.heading += headingIncrement;
+                setTimeout(runOperation, 10);
+            } else {
+                wwd.navigator.heading = 0;
+            }
+            wwd.redraw();
+        };
+        setTimeout(runOperation, 10);
+    }
+
+
 
     //toggle atmosphere
     function toggleAtmosphere() {
@@ -501,7 +530,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
         //setWwd(eww);
         let wmsConfigBg = {
-            service: "https://tiles.maps.eox.at/wms",
+            service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "s2cloudless-2018",
             title: "s2cloudless-2018",
             numLevels: 19,
@@ -521,8 +550,14 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             sector: WorldWind.Sector.FULL_SPHERE,
             levelZeroDelta: new WorldWind.Location(90, 90)
         }
+
+        console.log(WorldWind.configuration.baseUrl)
         WorldWind.configuration.baseUrl = WorldWind.configuration.baseUrl.slice(0,-3)
-        let starFieldLayer = new WorldWind.StarFieldLayer();
+        console.log(WorldWind.configuration.baseUrl)
+
+        //let starFieldLayer = new WorldWindX.StarFieldLayer();
+        // let starFieldLayer = new WorldWind.StarFieldLayer();
+        let starFieldLayer = new StarFieldLayer();
         let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_01deg.jpg');
         // let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_3km.jpg');
         
@@ -557,5 +592,5 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     }, []); // effect runs only once
         
   
-  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames };
+  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, northUp };
 }

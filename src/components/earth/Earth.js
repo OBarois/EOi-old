@@ -19,7 +19,8 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
         toggleAtmosphere,
         toggleStarfield,
         toggleNames,
-        setTime
+        setTime,
+        northUp
     } = useEww({
         id: id,
         clat: clat,
@@ -35,6 +36,7 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     useHotkeys("s",toggleStarfield)  
     useHotkeys("n",toggleNames)  
     useHotkeys("c",removeGeojson)
+    useHotkeys("u",northUp)
 
     useEffect(() => {
         setTime(viewdate.getTime())

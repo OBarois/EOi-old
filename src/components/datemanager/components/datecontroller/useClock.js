@@ -14,7 +14,7 @@ export function useClock({ autoStart, duration, initdate }) {
     const step = useRef() 
     const refreshrate = useRef() 
     // step.current = 1000*60*60
-    refreshrate.current = 200
+    refreshrate.current = 50
     
     const ldate = useRef()
 
