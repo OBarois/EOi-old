@@ -2,7 +2,7 @@
   "name": "eoi",
   "version": "0.1.0",
   "main": "src/index.js",
-  "homepage": "https://obarois.github.io/eoi",
+  "homepage": "https://obarois.github.io/EOi",
   "dependencies": {
     "@straw-hat/react-fullscreen": "^1.2.1",
     "babel-preset-react-app": "^7.0.0",
