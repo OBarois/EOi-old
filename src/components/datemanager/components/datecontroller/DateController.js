@@ -16,8 +16,7 @@ function DateController({startdate, onDateChange}) {
         decreaseSpeed,
         // forceDate
     } = useClock({
-        autoStart: false,
-        duration: 600000,
+        autoStart: true,
         initdate: startdate
     })
 

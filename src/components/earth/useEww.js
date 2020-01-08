@@ -530,7 +530,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
         //setWwd(eww);
         let wmsConfigBg = {
-            service: "https://tiles.esa.maps.eox.at/wms",
+            service: "https://tiles.maps.eox.at/wms",
             layerNames: "s2cloudless-2018",
             title: "s2cloudless-2018",
             numLevels: 19,

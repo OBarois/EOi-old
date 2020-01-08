@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 
-export function useClock({ autoStart, duration, initdate }) {
+export function useClock({ autoStart, initdate }) {
     //console.log('useClock renders')
     //const { autoStart, duration } = settings || {};
   
@@ -48,6 +48,7 @@ export function useClock({ autoStart, duration, initdate }) {
     function decreaseSpeed() {
         step.current = (step.current > 0)? step.current /= 2:step.current *= 2
         if(Math.abs(step.current) < refreshrate.current) step.current = -1 * refreshrate.current
+        console.log('step: '+step.current)
         // setStepstate((st)=>st/2)
     }
 
@@ -61,7 +62,7 @@ export function useClock({ autoStart, duration, initdate }) {
     
     function start() {
         console.log('start clock')
-        if(!step.current) step.current = 1000*60*60
+        if(!step.current) step.current = 50
         intervalRef.current = setInterval( ()=>{
             ldate.current += step.current
             setDate(new Date(ldate.current))
@@ -79,7 +80,6 @@ export function useClock({ autoStart, duration, initdate }) {
     
 
     function reset() {
-        stop()
         ldate.current = new Date().getTime()
         setDate(new Date(ldate.current))
 
@@ -88,25 +88,12 @@ export function useClock({ autoStart, duration, initdate }) {
      
     function forceDate(newdate) {
         console.log('forcedate useclock: '+newdate.toJSON())
-        if(playing) {
-            stop()
-            ldate.current = newdate.getTime()
-            start()    
-        } else {
-            ldate.current = newdate.getTime()
-        }
+        ldate.current = newdate.getTime()
     }
 
     useEffect(() => {
         console.log('init start useclock '+initdate.toJSON())
-        // if ( !playing )  ldate.current = initdate.getTime()
-        if ( playing ) {
-                stop()
-            ldate.current = initdate.getTime()
-            start()
-        } else {
-            ldate.current = initdate.getTime()
-        }  
+        ldate.current = initdate.getTime()
     }, [initdate])
 
 
@@ -120,7 +107,7 @@ export function useClock({ autoStart, duration, initdate }) {
             start();
         }
         //return reset;
-    }, []);
+    }, [autoStart]);
 
   
   return { date, playing, togglePause, reset, increaseSpeed, decreaseSpeed, forceDate };
