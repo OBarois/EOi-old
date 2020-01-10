@@ -79,10 +79,11 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             console.log('delta '+delta[1]+ '  temp.deltaoffset: '+temp.deltaoffset[1]+' temp.xy: '+temp.xy[1]+ ' xy.getValue()[1]: '+xy.getValue()[1])
             if (first) setActive(true)
             if (doubleTapZoom) {
-                console.log((temp.lastdeltaX - delta[1] > 0))
+                console.log((temp.lastdeltaX - delta[1] ))
 
                 // zoom = lastZoom.current + lastZoom.current * (delta[1] /30) 
-                zoom =  temp.initialzoom + delta[1]  * delta[1] * delta[1]
+                //zoom =  temp.initialzoom + delta[1]  * delta[1] * delta[1]
+                zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdeltaX - delta[1] )
                 //zoom = temp.initialzoom + 5000000 * (MAXZOOM/(1+MAXZOOM - temp.currentzoom)) * delta[1]
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
