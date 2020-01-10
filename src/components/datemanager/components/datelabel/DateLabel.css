@@ -19,7 +19,7 @@
 .LabelContainer {
   position: fixed;
   top: 5px;
-  right:5px;
+  left:5px;
   width: 100px;
   height: 'auto';
   background: rgba(82, 219, 89, 0.2);
@@ -59,10 +59,12 @@
   width: 80%;
   height: 2px;
   background-color: var(--color);
+  background-color: rgb(33, 59, 177);
+  justify-content: center;
   /* position: absolute; */
-  margin-top: -4px;
+  /* margin-top: -4px; */
   margin-left: 8px;
-  margin: 'auto';
+  /* margin: 'auto'; */
   box-shadow: 0.1em 0.1em 0.15em  rgba(22, 22, 20, 0.74);
 }
 

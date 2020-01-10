@@ -3,6 +3,7 @@ import {useSpring, animated, config} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
 import DateSelectorScale from './DateSelectorScale'
+import useDebounce from '../../utils/useDebounce'
 
 import './DateSelector.css';
 // import { start } from 'repl';
@@ -14,7 +15,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     const selector = useRef()
     const offset = useRef()
-    const lastZoom = useRef()
     if(!offset.current) offset.current = [0, 0 ]
     
     const [scaledate, setScaledate ] = useState(startdate)
@@ -27,86 +27,82 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     // zoomfactor: how long is a pixel in ms
     const [zoomfactor, setZoomfactor ] = useState(STEPS_UP[0])
-    if (!lastZoom.current) lastZoom.current = STEPS_UP[0]
-
-    // to detect double taps
-    const lastTap = useRef()
-    const [doubleTapZoom, setDoubleTapZoom] = useState(false)
-    const isDoubleTap = () => {
-        const now = Date.now();
-        if (lastTap.current && (now - lastTap.current) < 300) {
-            setDoubleTapZoom(true)
-        } else {
-            lastTap.current = now
-            setDoubleTapZoom(false)
-        }
-      }
-    const handleDoubleTap = () => {
-        const now = Date.now();
-        console.log('handleDoubleTap')
-        if (lastTap.current && (now - lastTap.current) < 300) {
-            setDoubleTapZoom(true)
-            console.log('DoubleTap')
-        } else {
-            lastTap.current = now
-            setDoubleTapZoom(false)
-        }
-      }
 
 
     const [{ xy }, set] = useSpring(() => ({ xy: [0,0] }))
 
     const bind = useGesture({
 
-        //onMouseDown: () => {isDoubleTap()},
-        onDragEnd: () => {
-                setDoubleTapZoom(false)
-                lastZoom.current = zoomfactor
-                console.log('drag stop')
-                
-
-        },
-
         onDrag: ({  event, first, down, delta, velocity, direction, temp = {
             xy: xy.getValue(),
+            laststeparea: 0,
             deltaoffset: [0,0]
             }
         }) => {
-            // event.preventDefault()
+            let Xoffset = selector.current.parentElement.offsetWidth - (event.pageX?event.pageX:selector.current.parentElement.offsetWidth)
+            let Yoffset = (event.pageY?event.pageY:selector.current.parentElement.offsetHeight) - selector.current.offsetHeight/2
+
+            let steparea
             let zoom
 
-            //console.log('delta '+delta[1]+ '  temp.deltaoffset: '+temp.deltaoffset[1]+' temp.xy: '+temp.xy[1]+ ' xy.getValue()[1]: '+xy.getValue()[1])
-            if (first) setActive(true)
-            if (doubleTapZoom) {
-                // zoom = lastZoom.current + lastZoom.current * (delta[1] /30) 
-                zoom = lastZoom.current + lastZoom.current * delta[1] * delta[1] * delta[1]
-                if (zoom < 1000) zoom = 1000
-                if (zoom > 1000*60*60*24*15) zoom = 1000*60*60*24*15
-                setZoomfactor(zoom)
+            if(Yoffset > 0) {
+                steparea = Math.min(STEPS_UP.length-1,Math.floor((Xoffset-selector.current.offsetWidth)/60+1))
+                steparea = (steparea > STEPS_UP.length-1)?STEPS_UP.length:steparea
+                steparea = (steparea < 0)?0:steparea
+                zoom = STEPS_UP[steparea]
+            } else {
+                steparea = Math.min(STEPS_DOWN.length-1,Math.floor((Xoffset-selector.current.offsetWidth)/60+1))
+                steparea = (steparea > STEPS_DOWN.length-1)?STEPS_DOWN.length:steparea
+                steparea = (steparea < 0)?0:steparea
+                zoom = STEPS_DOWN[steparea]
+            }
+
+            // console.log(steparea)
+            let step = 1
+            // console.log(offset.current)
+            // if (Xoffset > selector.current.offsetWidth) steparea = 1
+            // if (Xoffset > selector.current.offsetWidth + 100) steparea = 2
+            
+            // for ( let i = 0 ; i < STEPS.length ; i++ ) {
+
+            // }
+            
+            if (steparea !== temp.laststeparea) {
+                console.log(' step changed: '+temp.laststeparea+' to '+steparea)
                 
+                setZoomfactor(zoom)
                 setNewstart(scaledate)
+                temp.laststeparea = steparea
                 temp.xy = [0,0]
                 temp.deltaoffset = delta
-            }
-            let step = 1
+                
+            } 
 
-            
+            if (first) setActive(true)
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
+            // console.log('velocity '+velocity) 
+            
             set({ 
-                xy: (doubleTapZoom)?temp.xy:add(add(sub(delta,temp.deltaoffset),offset.current), temp.xy), 
+                // xy: add(scale(sub(delta,temp.deltaoffset),step), temp.xy), 
+                xy: add(scale(add(sub(delta,temp.deltaoffset),offset.current),step), temp.xy), 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity*step), decay: true},
+                // config: { mass: 10, tension: 20 , friction: 40, precision: 1 },
+                // onFrame: ()=>{console.log('xy: '+xy.getValue())},
+                // config: config.gentle,
+                // config: {},
                 onFrame: ()=>{
-                    if (!doubleTapZoom) {
-                        let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
-                        setScaledate(newdate)
-                        setlLastStartdate(newdate)
-    
-                    }
+                    let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
+                    // onDateChange(newdate)
+                    setScaledate(newdate)
+                    setlLastStartdate(newdate)
                 },
+                // onFrame: ()=>{onDateChange( olddate => new Date(olddate.getTime() + xy.getValue()[1] * 1000))},
+                // onFrame: setLiveDate(),
                 onRest: ()=>{
-                    if (!down && !doubleTapZoom) {
+                    if (!down) {
+                        // setTimeout(()=>setActive(false),1)
                         setActive(false)
                         let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
                         onFinalDateChange(newdate)
@@ -142,7 +138,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     return (
         <animated.div {...bind()} className='DateSelector' ref={selector} >
-            <div className="Mask"  onClick={handleDoubleTap}>
+            <div className="Mask"  >
 
                 <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active}></DateSelectorScale>
                 

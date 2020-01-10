@@ -496,7 +496,20 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     // didMount effect
     useEffect(() => {
         console.log("useEffect (mount) in Eww  star/atmo: "+ starfield+'/'+atmosphere)
+
+        // to use DEM from Eox ESA Map server
+        var elevationModel = new WorldWind.ElevationModel();
+        elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+            coverageSector: WorldWind.Sector.FULL_SPHERE,
+            resolution: 0.008333333333333,
+            retrievalImageFormat: "image/tiff",
+            minElevation: -11000,
+            maxElevation: 8850,
+            urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "1.3.0")
+            }));
         // eww.current = new WorldWind.WorldWindow(id, elevationModel);
+
+
         eww.current = new WorldWind.WorldWindow(id);
         eww.current.redrawCallbacks.push(setGlobeStates)
 

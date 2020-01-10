@@ -32,8 +32,8 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
         let putyear = (_zoom < 1000*60*60*24*30*10)
         let putmonth = (_zoom < 1000*60*60*24*5)
         let putday = (_zoom < 1000*60*60*2)
-        let putevenhour = (_zoom < 1000*60*20)
-        let puthour = (_zoom < 1000*60*8)
+        let putevenhour = (_zoom < 1000*60*10)
+        let puthour = (_zoom < 1000*60*5)
         // console.log('  zoom: '+((_zoom*10)/(1000*60*60*24) ) +'  puthour: '+puthour+'  putday: '+putday+'  putmonth: '+putmonth+'  putevenhour: '+putevenhour)
         let lastpos = 0
         for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
