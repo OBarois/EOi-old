@@ -113,7 +113,7 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
                 zoomer: zoomfactor, 
                 dater: date.getTime()
             },
-            config: {  duration: 400},
+            config: {  duration: 200},
             immediate: false,
             onFrame: ()=>{
                 // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
