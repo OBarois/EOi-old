@@ -92,7 +92,7 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
                         tics.push({class:'DayTic', pos: i, label: day})
                     } else {
                         if (day == 1) {
-                            if (putday) tics.push({class:'DayTic_h', pos: i, label: day})
+                            tics.push({class:'DayTic', pos: i, label: day})
                             tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
                             tics.push({class:'YearTic_h', pos: i, label: year})
                         }
@@ -116,7 +116,7 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
                         tics.push({class:'MonthTic', pos: i, label: monthcode[month]})
                     } else {
                         // tics.push({class:'MonthTic', pos: i, label: month})
-                        tics.push({class:'YearTic_h', pos: i, label: year})
+                        tics.push({class:'YearTic', pos: i, label: year})
                     }
                 }
     

@@ -57,7 +57,7 @@
 .MonthTic_h {
     position: absolute;
     pointer-events: none;
-    font-size: 12px; 
+    font-size: 14px; 
     right: 29px;
     margin-top: 0px
 }
@@ -66,7 +66,7 @@
     pointer-events: none;
     font-size: 12px; 
     margin-top: 15px;
-    right: 32px
+    right: 29px
 }
 .YearTic_h2 {
     position: absolute;
@@ -78,7 +78,7 @@
 .DayTic {
     position: absolute;
     pointer-events: none;
-    font-size: 16px; 
+    font-size: 12px; 
     right: 10px
 }
 .MonthTic {
