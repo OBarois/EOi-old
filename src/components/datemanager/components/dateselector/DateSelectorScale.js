@@ -22,69 +22,101 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
         const monthcode = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
         const isEven = num => ((num % 2) == 0) ? true : false;
 
+        function pad(number, length) {  
+            var str = '' + number;
+            while (str.length < length) {
+                str = '0' + str;
+            }           
+            return str;        
+        }
 
-        let day, month, hour, year = 0
+
+        let day, month, hour, year, minute = 0
         let lastday =0
         let lastmonth = 0
         let lastyear = 0
         let lasthour = 0
+        let lastminute = 0
         let tics = []    
         let putyear = (_zoom < 1000*60*60*24*30*10)
-        let putmonth = (_zoom < 1000*60*60*24*5)
-        let putday = (_zoom < 1000*60*60*2)
-        let putevenhour = (_zoom < 1000*60*10)
-        let puthour = (_zoom < 1000*60*5)
+        let putmonth = (_zoom < 1000*60*60*24*3)
+        let putevenday = (_zoom < 1000*60*60*4)
+        let putday = (_zoom < 1000*60*70)
+        let putevenhour = (_zoom < 1000*60*7)
+        let puthour = (_zoom < 1000*60*3)
+        let puttenminute = (_zoom < 1000*40)
+        let putminute = (_zoom < 1000*2)
+
         // console.log('  zoom: '+((_zoom*10)/(1000*60*60*24) ) +'  puthour: '+puthour+'  putday: '+putday+'  putmonth: '+putmonth+'  putevenhour: '+putevenhour)
         let lastpos = 0
         for ( let i=0 ; i < scale.current.offsetHeight ; i+=1 ) {
             let refdate = new Date( (i- scale.current.offsetHeight/2) * _zoom + _start.getTime()  )
             day = refdate.getUTCDate()
-            month = monthcode[refdate.getUTCMonth()]
+            month = refdate.getUTCMonth()
             hour = refdate.getUTCHours()
             year = refdate.getUTCFullYear()
+            minute = refdate.getUTCMinutes()
 
-            if (putevenhour) {
+            if(puttenminute) {
+                if(minute != lastminute) {
+                    if((minute != 0 || hour != 0) && (minute % 10 === 0 || putminute)) {
+                        tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':'+pad(minute,2)})
+                    } else {
+                        if (minute == 0 && hour == 0) {
+                            tics.push({class:'DayTic_h', pos: i, label: day})
+                            tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
+                            tics.push({class:'YearTic_h', pos: i, label: year})            
+                        }
+                    }
+                }
+
+    
+            
+
+            } else if (putevenhour) {
                 if(hour != lasthour) {
-                    if (hour != 0 &&  (isEven(hour) || puthour)) {
-                        tics.push({class:'HourTic', pos: i, label: hour})
+                    if (hour != 0 &&  (hour % 3 === 0 || puthour)) {
+                        tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':00'})
                     } else  {
                         if (hour == 0) {
-                            tics.push({class:'DayTic', pos: i, label: day})
-                            tics.push({class:'MonthTic', pos: i, label: month})
-                            tics.push({class:'YearTic', pos: i, label: year})            
+                            tics.push({class:'DayTic_h', pos: i, label: day})
+                            tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
+                            tics.push({class:'YearTic_h', pos: i, label: year})            
                         }
                     }
                 }
     
-            } else if (putday) {
+            } else if (putevenday) {
                 if(day !== lastday) {
-                    if (day != 1) {
+                    if (day != 1 && (day % 5 === 0 || putday )) {
                         tics.push({class:'DayTic', pos: i, label: day})
                     } else {
-                        tics.push({class:'DayTic', pos: i, label: day})
-                        tics.push({class:'MonthTic', pos: i, label: month})
-                        tics.push({class:'YearTic', pos: i, label: year})
+                        if (day == 1) {
+                            if (putday) tics.push({class:'DayTic_h', pos: i, label: day})
+                            tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
+                            tics.push({class:'YearTic_h', pos: i, label: year})
+                        }
                      }
                     
                 }
     
             } else if (putmonth) {
                 if(month !== lastmonth && lastday!=0 && putmonth) {
-                    if (month !== 'JAN') {
-                        tics.push({class:'MonthTic', pos: i, label: month})
+                    if (month !== 0) {
+                        tics.push({class:'MonthTic', pos: i, label: monthcode[month]})
                     } else {
-                        tics.push({class:'MonthTic', pos: i, label: month})
-                        tics.push({class:'YearTic', pos: i, label: year})
+                        tics.push({class:'MonthTic', pos: i, label: monthcode[month]})
+                        tics.push({class:'YearTic_h2', pos: i, label: year})
                     }
                 }
     
             } else if (putyear) {
                 if(year !== lastyear && lastmonth !== 0 ) {
-                    if (month !== 'JAN') {
-                        tics.push({class:'MonthTic', pos: i, label: month})
+                    if (month !== 0) {
+                        tics.push({class:'MonthTic', pos: i, label: monthcode[month]})
                     } else {
                         // tics.push({class:'MonthTic', pos: i, label: month})
-                        tics.push({class:'YearTic', pos: i, label: year})
+                        tics.push({class:'YearTic_h', pos: i, label: year})
                     }
                 }
     
@@ -94,6 +126,7 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
             lastyear = year
             lastmonth = month
             lasthour = hour
+            lastminute = minute
         }
         
         return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))

@@ -41,10 +41,8 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     const handleDoubleTap = () => {
         const now = Date.now();
-        console.log('handleDoubleTap')
         if (lastTap.current && (now - lastTap.current) < 300) {
             setDoubleTapZoom(true)
-            console.log('DoubleTap')
         } else {
             lastTap.current = now
             setDoubleTapZoom(false)
@@ -56,7 +54,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     const bind = useGesture({
 
-        onMouseDown: () => {handleDoubleTap()},
+        // onMouseDown: (event) => {
+        //     event.preventDefault()
+        //     handleDoubleTap()
+        // },
         onDragEnd: () => {
                 setDoubleTapZoom(false)
                 lastZoom.current = zoomfactor
@@ -73,13 +74,16 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             currentzoom: zoomfactor
             }
         }) => {
-            // event.preventDefault()
+            //event.preventDefault()
             let zoom
-
-            console.log('delta '+delta[1]+ '  temp.deltaoffset: '+temp.deltaoffset[1]+' temp.xy: '+temp.xy[1]+ ' xy.getValue()[1]: '+xy.getValue()[1])
-            if (first) setActive(true)
+            // console.log(first)
+            // console.log('delta '+delta[1]+ '  temp.deltaoffset: '+temp.deltaoffset[1]+' temp.xy: '+temp.xy[1]+ ' xy.getValue()[1]: '+xy.getValue()[1])
+            if (first) {
+                setActive(true)
+                handleDoubleTap()
+            }
             if (doubleTapZoom) {
-                console.log((temp.lastdeltaX - delta[1] ))
+                // console.log((temp.lastdeltaX - delta[1] ))
 
                 // zoom = lastZoom.current + lastZoom.current * (delta[1] /30) 
                 //zoom =  temp.initialzoom + delta[1]  * delta[1] * delta[1]
@@ -149,7 +153,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
 
     return (
         <animated.div {...bind()} className='DateSelector' ref={selector} >
-            <div className="Mask"  onClick={handleDoubleTap}>
+            <div className="Mask"  >
 
                 <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active}></DateSelectorScale>
                 
