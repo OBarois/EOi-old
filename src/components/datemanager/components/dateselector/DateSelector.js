@@ -117,11 +117,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                     }
                 },
                 onRest: ()=>{
-                    if (!down && !doubleTapZoom) {
+                    if (!down ) {
                         setActive(false)
-                        let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
-                        onFinalDateChange(newdate)
-                        offset.current = [0,0]
+                        if (!doubleTapZoom) {
+                            let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
+                            onFinalDateChange(newdate)
+                            offset.current = [0,0]
+    
+                        }
 
                     }
                 }

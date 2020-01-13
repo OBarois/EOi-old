@@ -37,12 +37,12 @@ function DateController({startdate, onDateChange}) {
         //setAppdate({appdate: new Date(date)})
     },[date]);
 
-    useEffect(() => {
-        // console.log("date from datemanager: "+new Date(date).toJSON())
-        // forceDate(startdate)
-        //forceDate(date)
-        //setAppdate({appdate: new Date(date)})
-    },[startdate]);
+    // useEffect(() => {
+    //     // console.log("date from datemanager: "+new Date(date).toJSON())
+    //     // forceDate(startdate)
+    //     //forceDate(date)
+    //     //setAppdate({appdate: new Date(date)})
+    // },[startdate]);
 
     const [lastTap, setLasttap] = useState()
     const handleDoubleTap = () => {
