@@ -30,6 +30,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
     
     const [newstart, setNewstart ] = useState(startdate)
     const [active, setActive ] = useState(false)
+    const [manual, setManual ] = useState(false)
 
     // zoomfactor: how long is a pixel in ms
     const [zoomfactor, setZoomfactor ] = useState(DEFZOOM)
@@ -61,9 +62,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
         onDragEnd: () => {
                 setDoubleTapZoom(false)
                 lastZoom.current = zoomfactor
-                console.log('drag stop')
-                
-
         },
 
         onDrag: ({  event, first, down, delta, velocity, direction, temp = {
@@ -82,6 +80,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 setActive(true)
                 handleDoubleTap()
             }
+            setManual(down)
             if (doubleTapZoom) {
                 // console.log((temp.lastdeltaX - delta[1] ))
 
@@ -92,6 +91,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
+                console.log(zoom+' / '+(zoom-1000*60*60*24))
                 
                 setNewstart(scaledate)
                 temp.xy = [0,0]
@@ -100,17 +100,28 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 temp.lastdeltaX = delta[1]
             }
             let step = 1
-
+            console.log(' zoomfactor: ' + zoomfactor)
             
+            if (zoomfactor >  422274) step = 1000*60
+            if (zoomfactor >  4275383) step = 1000*60*60
+            if (zoomfactor >  14544702) step = 1000*60*60*24
+            if (zoomfactor > 120426316) step = 1000*60*60*24*30
+                    
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
             set({ 
                 xy: (doubleTapZoom)?temp.xy:add(add(sub(delta,temp.deltaoffset),offset.current), temp.xy), 
                 immediate: down, 
-                config: { velocity: scale(direction, velocity*step), decay: true},
+                config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
                     if (!doubleTapZoom) {
-                        let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
+                        let newdate
+                        if (step!=1) {
+                            //Math.ceil((newstart.getTime() - xy.getValue()[1] * zoomfactor)  / (1000*60*60*24*30)) * (1000*60*60*24*30) 
+                            newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                        } else {
+                            newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
+                        }
                         setScaledate(newdate)
                         setlLastStartdate(newdate)
     
@@ -158,7 +169,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
         <animated.div {...bind()} className='DateSelector' ref={selector} >
             <div className="Mask"  >
 
-                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active}></DateSelectorScale>
+                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active} down={manual}></DateSelectorScale>
                 
                 <div className="TriangleContainer" >
                     <svg height="40" width="20" className="Triangle">

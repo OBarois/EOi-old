@@ -2,7 +2,7 @@ import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
 import {useSpring, animated} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale({date, zoomfactor, immediate}) {
+function DateSelectorScale({date, zoomfactor, immediate, down}) {
 
     const scale = useRef()
     const [start, setStart] = useState(date)    
@@ -140,7 +140,7 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
     const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
     useLayoutEffect(() => {
         // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
-        
+        //if (Math.abs(zoomfactor-1000*60*60*24)< 1000*60*60*24) zoom = 1000*60*60*24
         set({ 
             to: {
                 zoomer: zoomfactor, 
@@ -159,19 +159,33 @@ function DateSelectorScale({date, zoomfactor, immediate}) {
 
     useLayoutEffect(() => {
         // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
-        
-        set({ 
+    // easing function
+    // function ease(t) {
+    //     console.log('easing')
+    //     return 1 - Math.cos(t * Math.PI/2);
+    //   }
+    
+
+    set({ 
             to: {
-                zoomer: zoomfactor, 
+                // zoomer: zoomfactor, 
                 dater: date.getTime()
+                // dater: stepdater
             },
             config: {  duration: 400},
             immediate: immediate,
             onFrame: ()=>{
                 // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
                 // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-                setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                //console.log(Math.ceil(dater.value  / (1000*60*60*24)) * (1000*60*60*24))
+                
+
+                setTimescale(scaleText(new Date(dater.value),zoomfactor))
+                // setTimescale(scaleText(new Date(stepdater),zoomfactor))
             }
+            // onRest: () => {
+            //     setTimescale(scaleText(new Date(stepdater),zoomfactor))
+            // }
         })
 
     },[date])
