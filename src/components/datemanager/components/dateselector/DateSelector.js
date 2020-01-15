@@ -31,6 +31,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
     const [newstart, setNewstart ] = useState(startdate)
     const [active, setActive ] = useState(false)
     const [manual, setManual ] = useState(false)
+    const [step, setStep ] = useState(1)
 
     // zoomfactor: how long is a pixel in ms
     const [zoomfactor, setZoomfactor ] = useState(DEFZOOM)
@@ -99,13 +100,28 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 temp.currentzoom = zoom
                 temp.lastdeltaX = delta[1]
             }
-            let step = 1
+            // let step = 1
             // console.log(' zoomfactor: ' + zoomfactor)
-            
-            if (zoomfactor >  422274) step = 1000*60
-            if (zoomfactor >  4275383) step = 1000*60*60
-            if (zoomfactor >  14544702) step = 1000*60*60*24
-            if (zoomfactor > 120426316) step = 1000*60*60*24*30
+            switch (true) {
+                case zoomfactor > 120426316:
+                    setStep(1000*60*60*24*30)
+                    break
+                case zoomfactor > 14544702:
+                    setStep(1000*60*60*24)
+                    break
+                case zoomfactor > 4275383:
+                    setStep(1000*60*60)
+                    break
+                case zoomfactor > 422274:
+                    setStep(1000*60)
+                    break
+                default:
+                setStep(1)
+            }
+            // if (zoomfactor >  422274) setStep(1000*60)
+            // if (zoomfactor >  4275383) setStep(1000*60*60)
+            // if (zoomfactor >  14544702) setStep(1000*60*60*24)
+            // if (zoomfactor > 120426316) setStep(1000*60*60*24*30)
                     
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
@@ -154,13 +170,16 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
         onDateChange(scaledate)
     },[scaledate])
 
+    // useEffect(() => {
+    //     onStepChange(step)
+    // },[step])
 
 
     return (
         <animated.div {...bind()} className='DateSelector' ref={selector} >
             <div className="Mask"  >
 
-                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active} down={manual}></DateSelectorScale>
+                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active} step={step}></DateSelectorScale>
                 
                 <div className="TriangleContainer" >
                     <svg height="40" width="20" className="Triangle">

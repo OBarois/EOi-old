@@ -2,10 +2,10 @@ import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
 import {useSpring, animated} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale({date, zoomfactor, immediate, down}) {
+function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
     const scale = useRef()
-    const [start, setStart] = useState(date)    
+    const [opacity, setOpacity] = useState(1)    
     const [active, setActive] = useState(false)    
     const [timescale, setTimescale] = useState('')    
     // const [zoom, setZoom] = useState(zoomfactor)    
@@ -129,7 +129,7 @@ function DateSelectorScale({date, zoomfactor, immediate, down}) {
             lastminute = minute
         }
         
-        return tics.map(item => (            <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))
+        return tics.map(item => (            <animated.div className={item.class} key={item.class+item.pos} style={{top:item.pos,opacity:opacity}}>{item.label}</animated.div>))
     }
 
     // useLayoutEffect(() => {
@@ -139,23 +139,41 @@ function DateSelectorScale({date, zoomfactor, immediate, down}) {
 
     const [{ dater, zoomer }, set] = useSpring(() => ({ dater: date.getTime(), zoomer: zoomfactor}))
     useLayoutEffect(() => {
-        // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
+        // set({ 
+        //     to: {
+        //         zoomer: zoomfactor, 
+        //         dater: date.getTime()
+        //     },
+        //     config: {  duration: 200},
+        //     immediate: false,
+        //     onFrame: ()=>{
+        //         console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
+        //         // setTimescale(scaleText(new Date(dater.value),zoomer.value))
+        //         setTimescale(scaleText(new Date(dater.value),zoomer.value))
+        //     }
+        // })
+        setTimescale(scaleText(date,zoomfactor))
+    },[ zoomfactor])
+
+    const [{ opaciter }, setOpaciter] = useSpring(() => ({ opaciter: 0}))
+    useLayoutEffect(() => {
+
+        console.log('step changed to: '+step)
         //if (Math.abs(zoomfactor-1000*60*60*24)< 1000*60*60*24) zoom = 1000*60*60*24
-        set({ 
+        setOpaciter({ 
             to: {
-                zoomer: zoomfactor, 
-                dater: date.getTime()
+                opaciter: 1
             },
-            config: {  duration: 200},
+            config: {  duration: 1000, resolution: 0.01,decay: true},
             immediate: false,
             onFrame: ()=>{
-                // console.log(zoomer.value+'/ '+(new Date(dater.value)).toJSON())
+                console.log('opacity:'+opaciter.value)
                 // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-                setTimescale(scaleText(new Date(dater.value),zoomer.value))
+                setOpacity(opaciter.value)
             }
         })
 
-    },[ zoomfactor])
+    },[ step])
 
     useLayoutEffect(() => {
         // console.log('zoomfactor: '+zoomfactor+'  to: '+date.toJSON())
