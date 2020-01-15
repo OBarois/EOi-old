@@ -22,7 +22,7 @@
     left:5px;
     width: 100px;
     height: 80px;;
-    background: rgba(82, 219, 89, 0.2);
+    background: rgba(82, 219, 89, 0);
     border-radius: 8px;
     /* display: flex; 
     justify-content: center;
@@ -48,9 +48,9 @@
   }
   .YearMonth {
     position: absolute;
-    width: 50%;
+    /* width: 50%; */
     height: 50px;
-    left: 50px;
+    left: 53px;
     /* display: flex; 
     justify-content: center; */
     flex-direction: column;
@@ -130,15 +130,40 @@
   font-size: 20px;
   font-kerning: 'none';
   text-align: 'justify';
-  width: 30%;
   height: 23px;
   margin-left: 8px;
 
   /* margin: 0 0 0 0; */
 }
+.hourseparator {
+    position: absolute;
+    left: 32px;
+    pointer-events: none;
+    background: rgba(157, 82, 219, 0);
+
+    font-size: 20px;
+    font-kerning: 'none';
+    text-align: 'justify';
+    /* width: 30%; */
+    height: 25px;
+  
+}
+.minseparator {
+    position: absolute;
+    left: 60px;
+    pointer-events: none;
+    background: rgba(157, 82, 219, 0);
+
+    font-size: 20px;
+    font-kerning: 'none';
+    text-align: 'justify';
+    /* width: 30%; */
+    height: 23px;
+  
+}
   .MinuteLabel {
   position: absolute;
-  left: 35px;
+  left: 37px;
   pointer-events: none;
   background: rgba(157, 82, 219, 0);
   
