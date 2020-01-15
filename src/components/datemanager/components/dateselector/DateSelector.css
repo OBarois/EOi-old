@@ -51,19 +51,30 @@
 .DayTic_h {
     position: absolute;
     pointer-events: none;
-    font-size: 14px; 
+    font-weight: bold;
+    font-size: 12px; 
     right: 10px
 }
 .MonthTic_h {
     position: absolute;
     pointer-events: none;
-    font-size: 14px; 
+    font-weight: bold;
+    font-size: 12px; 
+    right: 10px;
+    margin-top: 0px
+}
+.MonthTic_h2 {
+    position: absolute;
+    pointer-events: none;
+    font-weight: bold;
+    font-size: 12px; 
     right: 29px;
     margin-top: 0px
 }
 .YearTic_h {
     position: absolute;
     pointer-events: none;
+    font-weight: bold;
     font-size: 12px; 
     margin-top: 15px;
     right: 29px
@@ -72,7 +83,7 @@
     position: absolute;
     pointer-events: none;
     font-size: 12px; 
-
+    font-weight: bold;
     right: 35px
 }
 .DayTic {
@@ -99,6 +110,8 @@
     position: absolute;
     pointer-events: none;
     font-size: 12px; 
+    opacity: 0;
+    transition: opacity 2s ;
     /* color: rgba(235, 214, 119, 0.5);*/
     right: 12px
 }

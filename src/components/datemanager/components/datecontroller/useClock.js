@@ -92,7 +92,7 @@ export function useClock({ autoStart, initdate }) {
     }
 
     useEffect(() => {
-        console.log('init start useclock '+initdate.toJSON())
+        // console.log('init start useclock '+initdate.toJSON())
         ldate.current = initdate.getTime()
     }, [initdate])
 

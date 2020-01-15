@@ -7,14 +7,12 @@ import DateSelectorScale from './DateSelectorScale'
 import './DateSelector.css';
 // import { start } from 'repl';
 
-function DateSelector({startdate, onDateChange, onFinalDateChange}) {
-    const STEPS_UP = [ 1000*60*60 ,  1000*60*60*24, 1000*60*60*24*15]
-    const STEPS_DOWN = [ 1000*60*60 , 1000*60*10, 1000*60*1.8, 1000*27, 1000*60*60*24]
+function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}) {
+
     const MAXZOOM = 1000*60*60*24*15
     const MINZOOM = 1000
     const DEFZOOM = 1000*60*60
     
-
     const selector = useRef()
     const offset = useRef()
     if(!offset.current) offset.current = [0, 0 ]
@@ -32,6 +30,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
     const [active, setActive ] = useState(false)
     const [manual, setManual ] = useState(false)
     const [step, setStep ] = useState(1)
+    const [stepLabel, setStepLabel ] = useState('hour')
 
     // zoomfactor: how long is a pixel in ms
     const [zoomfactor, setZoomfactor ] = useState(DEFZOOM)
@@ -105,18 +104,24 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
             switch (true) {
                 case zoomfactor > 120426316:
                     setStep(1000*60*60*24*30)
+                    setStepLabel('month')
                     break
                 case zoomfactor > 14544702:
                     setStep(1000*60*60*24)
+                    setStepLabel('day')
                     break
                 case zoomfactor > 4275383:
                     setStep(1000*60*60)
+                    setStepLabel('hour')
                     break
                 case zoomfactor > 422274:
                     setStep(1000*60)
+                    setStepLabel('minute')
                     break
                 default:
-                setStep(1)
+                    setStep(1)
+                    setStepLabel('second')
+
             }
             // if (zoomfactor >  422274) setStep(1000*60)
             // if (zoomfactor >  4275383) setStep(1000*60*60)
@@ -170,9 +175,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
         onDateChange(scaledate)
     },[scaledate])
 
-    // useEffect(() => {
-    //     onStepChange(step)
-    // },[step])
+    useEffect(() => {
+        onStepChange(stepLabel)
+    },[stepLabel])
 
 
     return (

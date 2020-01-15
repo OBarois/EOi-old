@@ -9,6 +9,7 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
     const [selectorStartdate, setselectorStartdate] = useState(startdate)
     const [controllerStartdate, setcontrollerStartdate] = useState(startdate)
     const [labeldate, setLabelDate] = useState(startdate)
+    const [dateLabelHighlight,setDateLabelHighlight] = useState(1)
 
     const handleSelectorDateChange = (date) => {
         // console.log('handleSelectorDateChange:' + date.toJSON())
@@ -28,6 +29,11 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
         setselectorStartdate(date)
     }
 
+    const handleSelectorStepChange = (step) => {
+        console.log('handleSelectorStepChange' + step)
+        setDateLabelHighlight(step)
+    }
+
     useEffect(() => {
         // console.log('startdate in date manager: '+startdate.toJSON())
         setselectorStartdate(startdate)
@@ -38,8 +44,11 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
     return (
         <div >
           <DateController startdate={controllerStartdate} onDateChange={handleControllerDateChange}/>
-          <DateLabel date={labeldate} highlight='none' animated={searching}/>
-          <DateSelector startdate={selectorStartdate} onDateChange={handleSelectorDateChange} onFinalDateChange={handleSelectorFinalDateChange}/>
+          <DateLabel date={labeldate} highlight='none' animated={searching} highlight={dateLabelHighlight}/>
+          <DateSelector startdate={selectorStartdate} 
+                onDateChange={handleSelectorDateChange} 
+                onFinalDateChange={handleSelectorFinalDateChange} 
+                onStepChange={handleSelectorStepChange}/>
         </div>
     ) 
 }
