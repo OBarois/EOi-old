@@ -91,7 +91,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
-                console.log(zoom+' / '+(zoom-1000*60*60*24))
+                // console.log(zoom+' / '+(zoom-1000*60*60*24))
                 
                 setNewstart(scaledate)
                 temp.xy = [0,0]
@@ -100,7 +100,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 temp.lastdeltaX = delta[1]
             }
             let step = 1
-            console.log(' zoomfactor: ' + zoomfactor)
+            // console.log(' zoomfactor: ' + zoomfactor)
             
             if (zoomfactor >  422274) step = 1000*60
             if (zoomfactor >  4275383) step = 1000*60*60
@@ -115,13 +115,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
                     if (!doubleTapZoom) {
-                        let newdate
-                        if (step!=1) {
-                            //Math.ceil((newstart.getTime() - xy.getValue()[1] * zoomfactor)  / (1000*60*60*24*30)) * (1000*60*60*24*30) 
-                            newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
-                        } else {
-                            newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
-                        }
+                        let newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
                         setScaledate(newdate)
                         setlLastStartdate(newdate)
     
@@ -130,13 +124,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange}) {
                 onRest: ()=>{
                     if (!down ) {
                         setActive(false)
-                        if (!doubleTapZoom) {
-                            let newdate = new Date(newstart.getTime() - xy.getValue()[1] * zoomfactor)
-                            onFinalDateChange(newdate)
-                            offset.current = [0,0]
+                        let newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                        onFinalDateChange(newdate)
+                        offset.current = [0,0]
     
-                        }
-
                     }
                 }
             })
