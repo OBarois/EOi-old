@@ -21,7 +21,7 @@
     top: 5px;
     left:5px;
     width: 100px;
-    height: 'auto';
+    height: 80px;;
     background: rgba(82, 219, 89, 0.2);
     border-radius: 8px;
     display: flex; 
@@ -29,43 +29,43 @@
     flex-direction: column;
     text-align: center;
     font-kerning: 'none';
+    
   
   }
   
   .Date {
     width: 100%;
-    height: 60px;
+    height: 50%;
     display: flex; 
     justify-content: center;
     flex-direction: row;
     background: rgba(177, 155, 33, 0);
-  
-  
-    margin: auto;
-    margin-top: -10px;
+    /* margin-top: -10px; */
+    /* margin: auto; */
   
   }
   .YearMonth {
     width: 50%;
-    height: 40px;
+    height: 50px;
     display: flex; 
     justify-content: center;
     flex-direction: column;
   
-    margin: auto;
+    margin-top: 5px;
   }
   
   .Line{
     width: 80%;
-    height: 2px;
+    height: 4px;
     background-color: var(--color);
     background-color: rgb(33, 59, 177);
     justify-content: center;
     /* position: absolute; */
     /* margin-top: -4px; */
     margin-left: 8px;
-    /* margin: 'auto'; */
+    /* margin: auto; */
     box-shadow: 0.1em 0.1em 0.15em  rgba(22, 22, 20, 0.74);
+
   }
   
   
@@ -81,26 +81,22 @@
     /* position: absolute; */
     pointer-events: none;
     font-size: 45px; 
-    width: 50%;
-    height: 'auto';
+    width: 100%;
+    height: 100%;
     margin: auto;
   }
   .TimeLabel {
-    width: 100%;
-    height: 60px;
+    height: 46px;
     display: flex; 
     justify-content: center;
     flex-direction: row;
     background: rgba(177, 155, 33, 0);
   
-  
-    margin: auto;
-    margin-top: 40px;
-  
   }
-    }
+    
   .HourLabel {
-  /* position: absolute; */
+  /* position: absolute;
+  left: 0px; */
   pointer-events: none;
   background: rgba(157, 82, 219, 0);
   
@@ -108,12 +104,14 @@
   font-kerning: 'none';
   text-align: 'justify';
   width: 30%;
-  height: 'auto';
-  margin-top: 2px;
-  margin-left: -2px;
-  }
+  height: 23px;
+  margin-left: 8px;
+
+  /* margin: 0 0 0 0; */
+}
   .MinuteLabel {
-  /* position: absolute; */
+  /* position: absolute;
+  left: 35px; */
   pointer-events: none;
   background: rgba(157, 82, 219, 0);
   
@@ -121,12 +119,15 @@
   font-kerning: 'none';
   text-align: 'justify';
   width: 30%;
-  height: 'auto';
-  margin-top: 2px;
-  margin-left: -2px;
-  }
+  height: 23px;
+
+  /* height: 'auto'; */
+  /* margin: auto; */
+}
   .SecondLabel {
-  /* position: absolute; */
+  /* position: absolute;
+  left: 65px; */
+
   pointer-events: none;
   background: rgba(157, 82, 219, 0);
   
@@ -134,17 +135,19 @@
   font-kerning: 'none';
   text-align: 'justify';
   width: 30%;
-  height: 'auto';
-  margin-top: 2px;
-  margin-left: -2px;
-  }
+  height: 23px;
+  margin-right: 8px;
+
+  /* height: 'auto'; */
+  /* margin: auto; */
+}
   .MonthLabel {
   /* position: absolute; */
   pointer-events: none;
   font-size: 21px; 
   /* left: 70px; */
-  margin: auto;
-  height: 50%;
+  margin-right: 5px;
+  height: 25px;
   }
   .YearLabel {
     /* position: absolute; */
@@ -152,15 +155,17 @@
     font-size: 17px; 
     /* top: 35px;
     left: 70px; */
-    margin: auto;
-    height: 40%;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    height: 25px;
+
   }
   .Highlighted {
     color: rgba(220, 223, 93, 0.966);
     text-shadow: 0px 0px 10px  rgba(219, 36, 36, 1);
   }
   .Greyedout {
-    color: rgba(150, 159, 161, 0.918);
+    color: var(--color);
   }
   
   

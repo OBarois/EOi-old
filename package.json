@@ -19,7 +19,7 @@
     "webworldwind-esa": "1.0.0"
   },
   "devDependencies": {
-    "gh-pages": "^2.0.1",
+    "gh-pages": "^2.2.0",
     "react-scripts": "3.0.1"
   },
   "scripts": {

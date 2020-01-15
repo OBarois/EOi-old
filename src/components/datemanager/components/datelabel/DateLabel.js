@@ -15,7 +15,7 @@ function DateLabel({date, highlight, animated}) {
                 </div>
             </div>
             <div className={animated?'Line  Line-active':'Line'} key='line' ></div>
-            <div className='Date'>
+            <div className='TimeLabel'>
                 <div className={highlight!=='hour' || highlight==='none'?'HourLabel ':'HourLabel Highlighted'} key='hour' >{dateFormat(date,'UTC:HH')}</div>
                 <div className={highlight!=='minute' || highlight==='none'?'MinuteLabel ':'MinuteLabel Highlighted'} key='minute' >{dateFormat(date,'UTC:MM')}</div>
                 <div className={highlight!=='second' || highlight==='none'?'SecondLabel ':'SecondLabel Highlighted'} key='second' >{dateFormat(date,'UTC:ss')}</div>
