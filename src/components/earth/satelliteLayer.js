@@ -28,7 +28,7 @@ const {
     RenderableLayer
 } = WorldWind;
 
-const modelsLayer = new RenderableLayer();
+const modelsLayer = new RenderableLayer('Model');
 fetch('./data/sentinel1/s1.json').then(response => {
     return response.json();
 }).then(satelliteData => {

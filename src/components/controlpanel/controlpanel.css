@@ -21,10 +21,10 @@
     -moz-user-drag: none;
     -o-user-drag: none;
     -webkit-user-drag: none;
-    height: 80px;
-    width: 80px;
+    height: 50px;
+    width: 50px;
     bottom: -5px;
-    left: -80px;
+    left: -50px;
     
   
   

@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
-import {useSpring, animated} from 'react-spring';
+import {useSpring, animated, config} from 'react-spring'
+import { useGesture, useDrag } from 'react-use-gesture'
 import {Spring} from 'react-spring/renderprops'
 import "./controlpanel.css"
 
@@ -11,33 +12,28 @@ import "./controlpanel.css"
 
 function ControlPanel() {
 
+    const [{ mr },set] = useSpring(() =>({ mr:  -300 }))
+    const bind = useGesture( {
+        onDrag: ({ vxvy }) => {
+            console.log('swipe'+vxvy[0])
+            if(vxvy[0]>1.5) {
+                set({
+                    mr: -300
+                })
+            }
+        }
+    })
 
-    /*
-    //const props = useSpring({from: { opacity: 0, marginLeft: 0 }, to: { opacity: 1, marginLeft: 100 }})
-    const props = useSpring({opacity: 0, to: { opacity: 1}})
-    return (
-        <animated.div className='ControlPanel' style={props}>I will fade in</animated.div>
-    )
-*/
-    const [active, setActive] = useState(false)
 
-    let styleOn = { opacity: 1, marginRight: 0 }
-    let styleOff = { opacity: 1, marginRight: -300 }
+    return   (
 
-
-    return (
-
-        <Spring
+        <animated.div {...bind()} style={{ marginRight: mr }} className='ControlPanel'>
+           <img className='Logo' src='./images/EOi_logo.png' alt='' onClick={()=>set({mr:0})} />
+            {/* <MissionSelector></MissionSelector> */}
         
-            from={ active ? styleOff : styleOn}
-            to={ active ? styleOn : styleOff}>
-            {props => 
-                <div className='ControlPanel' style={props} >
-                    <img className='Logo' src='./images/EOi_logo.png' alt='' onClick={()=>setActive((active => !active))} />
-                    {/* <MissionSelector></MissionSelector> */}
-                
-                </div>}
-        </Spring>
+        </animated.div>
+
+
     )
     
 }
