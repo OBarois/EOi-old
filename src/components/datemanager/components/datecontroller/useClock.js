@@ -14,7 +14,7 @@ export function useClock({ autoStart, initdate }) {
     const step = useRef() 
     const refreshrate = useRef() 
     // step.current = 1000*60*60
-    refreshrate.current = 50
+    refreshrate.current = 200
     
     const ldate = useRef()
 
@@ -62,7 +62,7 @@ export function useClock({ autoStart, initdate }) {
     
     function start() {
         console.log('start clock')
-        if(!step.current) step.current = 50
+        if(!step.current) step.current = refreshrate.current
         intervalRef.current = setInterval( ()=>{
             ldate.current += step.current
             setDate(new Date(ldate.current))
