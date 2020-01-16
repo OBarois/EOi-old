@@ -64,7 +64,7 @@ class StarFieldLayer extends Layer {
         this.showSun = true;
 
         //Documented in defineProperties below.
-        this._starDataSource = starDataSource || WorldWind.configuration.baseUrl + 'images/stars.json';
+        this._starDataSource = starDataSource || WorldWind.configuration.baseUrl + 'data/stars.json';
         this._sunImageSource = WorldWind.configuration.baseUrl + 'images/sunTexture.png';
 
         //Internal use only.

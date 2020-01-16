@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import WorldWind from "webworldwind-esa";
 import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
-
+import modelsLayer from './satelliteLayer';
 
 // BasicWorldWindowController.prototype.applyLimits = function () {
 //     var navigator = this.wwd.navigator;
@@ -601,7 +601,8 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
             { layer: starFieldLayer, enabled: starfield },
             { layer: atmosphereLayer, enabled: atmosphere },
-            { layer: quicklookLayer, enabled: true }
+            { layer: quicklookLayer, enabled: true },
+            { layer: modelsLayer, enabled: true }
         ];
     
         for (let l = 0; l < layers.length; l++) {

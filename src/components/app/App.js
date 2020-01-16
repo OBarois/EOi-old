@@ -3,6 +3,7 @@ import './App.css'
 import Earth from '../earth'
 import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
+import ControlPanel from "../controlpanel";
 
 // import useToggle from 'react-use/lib/useToggle'
 import Fullscreen from "react-full-screen"
@@ -41,6 +42,7 @@ function App() {
                     <Earth viewdate={viewdate} id="globe" starfield="true" atmosphere='true' clon='0.5' clat='40' names='true'/>
                 </div>
                 <DateManager startdate={startdate}  searching={searching} onDateChange={changeDate} />
+                <ControlPanel active="true"/>
             </Fullscreen>
         </div>
     )
