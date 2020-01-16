@@ -7,10 +7,10 @@ export function useClock({ autoStart, initdate }) {
   
     // let initDate = startdate
     const [date, setDate] = useState(initdate)
-    const [playing, setPlaying] = useState(false)
+    // const [playing, setPlaying] = useState(false)
     // const [stepstate, setStepstate] = useState(1000*60*60)
     // const [refreshrate, setrefreshrate] = useState(200)
-    
+    const playing = useRef()
     const step = useRef() 
     const refreshrate = useRef() 
     // step.current = 1000*60*60
@@ -53,7 +53,7 @@ export function useClock({ autoStart, initdate }) {
     }
 
     function togglePause() {
-        if (playing) {
+        if (playing.current) {
             stop()
         } else {
             start()
@@ -68,14 +68,14 @@ export function useClock({ autoStart, initdate }) {
             setDate(new Date(ldate.current))
         },refreshrate.current)
         
-        setPlaying(true)
+        playing.current = true
     }
     
     function stop() {
         console.log('stop clock')
         if(timeoutRef.current) clearTimeout(timeoutRef.current)
         if (intervalRef.current) clearInterval(intervalRef.current)
-        setPlaying(false)
+        playing.current = false
     }
     
 

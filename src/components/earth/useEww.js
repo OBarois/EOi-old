@@ -79,21 +79,28 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     //toggle atmosphere
     function toggleAtmosphere() {
         console.log('toggleAtmosphere')
-        eww.current.layers[3].enabled = !eww.current.layers[3].enabled
+        getLayerByName('Atmosphere').enabled = !getLayerByName('Atmosphere').enabled
         eww.current.redraw();
     }
 
     //toggle starField
     function toggleStarfield() {
         console.log('toggleStarfield')
-        eww.current.layers[2].enabled = !eww.current.layers[2].enabled
+        getLayerByName('StarField').enabled = !getLayerByName('StarField').enabled
         eww.current.redraw();
     }
 
     //toggle name overlay
     function toggleNames() {
         console.log('toggleNames')
-        eww.current.layers[1].enabled = !eww.current.layers[1].enabled
+        getLayerByName('overlay_bright').enabled = !getLayerByName('overlay_bright').enabled
+        eww.current.redraw();
+    }
+    //toggle background overlay
+    function toggleBg() {
+        console.log('toggleTerrain')
+        getLayerByName('terrain').enabled = !getLayerByName('terrain').enabled
+        getLayerByName('s2cloudless-2018').enabled = !getLayerByName('s2cloudless-2018').enabled
         eww.current.redraw();
     }
 
@@ -542,10 +549,20 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
 
         //setWwd(eww);
-        let wmsConfigBg = {
+        let wmsConfigBg_s2 = {
             service: "https://tiles.maps.eox.at/wms",
             layerNames: "s2cloudless-2018",
             title: "s2cloudless-2018",
+            numLevels: 19,
+            format: "image/png",
+            size: 256,
+            sector: WorldWind.Sector.FULL_SPHERE,
+            levelZeroDelta: new WorldWind.Location(90, 90)
+        }
+        let wmsConfigBg_terrain = {
+            service: "https://tiles.maps.eox.at/wms",
+            layerNames: "terrain",
+            title: "terrain",
             numLevels: 19,
             format: "image/png",
             size: 256,
@@ -579,7 +596,8 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         let quicklookLayer = new WorldWind.RenderableLayer('Quicklooks')
     
         let layers = [
-            { layer: new WorldWind.WmsLayer(wmsConfigBg, ""), enabled: true },
+            { layer: new WorldWind.WmsLayer(wmsConfigBg_s2, ""), enabled: true },
+            { layer: new WorldWind.WmsLayer(wmsConfigBg_terrain, ""), enabled: false },
             { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
             { layer: starFieldLayer, enabled: starfield },
             { layer: atmosphereLayer, enabled: atmosphere },
@@ -605,5 +623,5 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     }, []); // effect runs only once
         
   
-  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, northUp };
+  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, toggleBg, northUp };
 }
