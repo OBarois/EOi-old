@@ -4,6 +4,7 @@ import Earth from '../earth'
 import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
 import ControlPanel from "../controlpanel";
+import MissionSelector from "../missionselector";
 
 // import useToggle from 'react-use/lib/useToggle'
 import Fullscreen from "react-full-screen"
@@ -16,10 +17,16 @@ function App() {
     const [viewdate, setViewdate] = useState(initdate)
     const [startdate, ] = useState(initdate)
     const [searching, ] = useState(false)
+    const [collection, setCollection] = useState('S1')
 
     const changeDate = (newdate) => {
         // console.log('App changeDate callback: ' + newdate.toJSON())
         setViewdate(newdate)
+    }
+
+    const changeCollection = (mission) => {
+        console.log('new collection: ' + mission)
+        setCollection(mission)
     }
 
     useEffect(() => {
@@ -42,7 +49,9 @@ function App() {
                     <Earth viewdate={viewdate} id="globe" starfield="true" atmosphere='true' clon='0.5' clat='40' names='true'/>
                 </div>
                 <DateManager startdate={startdate}  searching={searching} onDateChange={changeDate} />
-                <ControlPanel active="true"/>
+                <ControlPanel active="true">
+                    <MissionSelector  onMissionChange={changeCollection}></MissionSelector>
+                </ControlPanel>
             </Fullscreen>
         </div>
     )

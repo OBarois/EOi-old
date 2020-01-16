@@ -10,7 +10,7 @@ import "./controlpanel.css"
 
 
 
-function ControlPanel() {
+function ControlPanel(props) {
 
     const [{ mr },set] = useSpring(() =>({ mr:  -300 }))
     const bind = useGesture( {
@@ -30,6 +30,7 @@ function ControlPanel() {
         <animated.div {...bind()} style={{ marginRight: mr }} className='ControlPanel'>
            <img className='Logo' src='./images/EOi_logo.png' alt='' onClick={()=>set({mr:0})} />
             {/* <MissionSelector></MissionSelector> */}
+            {props.children}
         
         </animated.div>
 
