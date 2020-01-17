@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useRef} from "react";
-import {useSpring, animated, config} from 'react-spring'
-import { useGesture, useDrag } from 'react-use-gesture'
+import React, {useState} from "react";
+import {useSpring, animated} from 'react-spring'
+import { useGesture } from 'react-use-gesture'
 import "./controlpanel.css"
 
 // import MissionSelector from "./missionselector";
@@ -16,17 +16,18 @@ function ControlPanel(props) {
     const [{ mr },set] = useSpring(() =>({ mr:  -300 }))
     const bind = useGesture( {
         onDrag: ({ down, delta, vxvy }) => {
-            if(vxvy[0]>1 || !down && delta[0] > 100) {
+            if(vxvy[0]>1 || (!down && delta[0] > 100)) {
                 set({
                     mr: -300
                 })
+                setOpen( true)
             } else {
                 set({
                     mr: down?-Math.max(delta[0],0):0
                 })
+                setOpen( false)
             }
         },
-        onDragEnd: () => { setOpen( !open)}
     })
 
 

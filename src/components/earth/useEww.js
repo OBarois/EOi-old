@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import WorldWind from "webworldwind-esa";
 import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
@@ -508,7 +508,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
     // didMount effect
     useEffect(() => {
-        console.log("useEffect (mount) in Eww  star/atmo: "+ starfield+'/'+atmosphere)
+        console.log("Creating the world...")
 
         // to use DEM from Eox ESA Map server
         var elevationModel = new WorldWind.ElevationModel();
@@ -587,9 +587,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             levelZeroDelta: new WorldWind.Location(90, 90)
         }
 
-        console.log(WorldWind.configuration.baseUrl)
         WorldWind.configuration.baseUrl = WorldWind.configuration.baseUrl.slice(0,-3)
-        console.log(WorldWind.configuration.baseUrl)
 
         //let starFieldLayer = new WorldWindX.StarFieldLayer();
         // let starFieldLayer = new WorldWind.StarFieldLayer();

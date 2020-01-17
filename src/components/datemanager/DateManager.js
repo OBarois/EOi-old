@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import DateLabel from './components/datelabel'
 import DateController from './components/datecontroller'
 import DateSelector from './components/dateselector'

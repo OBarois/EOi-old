@@ -1,7 +1,7 @@
 
 .ControlPanel {
     position: fixed;
-    background-color: #2a5abbdc;
+    background-color: #33333bdc;
     height: 100%;
     width: 300px;
     top: 0px;
@@ -25,6 +25,7 @@
     width: 50px;
     bottom: -5px;
     left: -50px;
+    z-index: 300; 
     
   
   
