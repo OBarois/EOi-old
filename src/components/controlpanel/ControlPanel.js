@@ -12,6 +12,8 @@ import "./controlpanel.css"
 
 function ControlPanel(props) {
 
+    const [open, setOpen] = useState(false)
+
     const [{ mr },set] = useSpring(() =>({ mr:  -300 }))
     const bind = useGesture( {
         onDrag: ({ down, delta, vxvy }) => {
@@ -24,14 +26,15 @@ function ControlPanel(props) {
                     mr: down?-Math.max(delta[0],0):0
                 })
             }
-        }
+        },
+        onDragEnd: () => { setOpen( !open)}
     })
 
 
     return   (
 
         <animated.div {...bind()} style={{ marginRight: mr }} className='ControlPanel'>
-           <img className='Logo' src='./images/EOi_logo.png' alt='' onClick={()=>set({mr:0})} />
+           <img className='Logo' src='./images/EOi_logo.png' alt='' onClick={()=>!open?set({mr:-300}):set({mr:0})} />
             {/* <MissionSelector></MissionSelector> */}
             {props.children}
         
