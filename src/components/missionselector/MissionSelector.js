@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useHotkeys } from 'react-hotkeys-hook';
-import './missionselector.css'
+import './MissionSelector.css'
 
 
 // should use a prop

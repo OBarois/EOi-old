@@ -14,11 +14,14 @@ function ControlPanel(props) {
 
     const [{ mr },set] = useSpring(() =>({ mr:  -300 }))
     const bind = useGesture( {
-        onDrag: ({ vxvy }) => {
-            console.log('swipe'+vxvy[0])
-            if(vxvy[0]>1.5) {
+        onDrag: ({ down, delta, vxvy }) => {
+            if(vxvy[0]>1 || !down && delta[0] > 100) {
                 set({
                     mr: -300
+                })
+            } else {
+                set({
+                    mr: down?-Math.max(delta[0],0):0
                 })
             }
         }
