@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import React, { useEffect} from 'react'
 import './Earth.css'
 import { useEww } from "./useEww"
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -44,7 +44,7 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
 
     useEffect(() => {
         setTime(viewdate.getTime())
-    },[viewdate])
+    },[viewdate, setTime])
 
 
 

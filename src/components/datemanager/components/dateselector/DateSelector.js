@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {useSpring, animated, config} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
@@ -18,7 +18,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     if(!offset.current) offset.current = [0, 0 ]
 
     const lastZoom = useRef()
-    if(!lastZoom.current) lastZoom.current = 1000*60*60
+    if(!lastZoom.current) lastZoom.current = DEFZOOM
 
     
     const [scaledate, setScaledate ] = useState(startdate)
@@ -28,8 +28,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     
     const [newstart, setNewstart ] = useState(startdate)
     const [active, setActive ] = useState(false)
-    const [manual, setManual ] = useState(false)
-    const [step, setStep ] = useState(1)
+    const [step, setStep ] = useState(60000)
     const [stepLabel, setStepLabel ] = useState('hour')
 
     // zoomfactor: how long is a pixel in ms
@@ -48,7 +47,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             lastTap.current = now
             setDoubleTapZoom(false)
         }
-      }
+    }
 
 
     const [{ xy }, set] = useSpring(() => ({ xy: [0,0] }))
@@ -80,12 +79,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 setActive(true)
                 handleDoubleTap()
             }
-            setManual(down)
             if (doubleTapZoom) {
-                // console.log((temp.lastdeltaX - delta[1] ))
-
-                // zoom = lastZoom.current + lastZoom.current * (delta[1] /30) 
-                //zoom =  temp.initialzoom + delta[1]  * delta[1] * delta[1]
                 zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdeltaX - delta[1] )
                 //zoom = temp.initialzoom + 5000000 * (MAXZOOM/(1+MAXZOOM - temp.currentzoom)) * delta[1]
                 if (zoom < MINZOOM) zoom = MINZOOM
@@ -99,35 +93,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 temp.currentzoom = zoom
                 temp.lastdeltaX = delta[1]
             }
-            // let step = 1
-            // console.log(' zoomfactor: ' + zoomfactor)
-            switch (true) {
-                case zoomfactor > 120426316:
-                    setStep(1000*60*60*24*30)
-                    setStepLabel('month')
-                    break
-                case zoomfactor > 14544702:
-                    setStep(1000*60*60*24)
-                    setStepLabel('day')
-                    break
-                case zoomfactor > 4275383:
-                    setStep(1000*60*60)
-                    setStepLabel('hour')
-                    break
-                case zoomfactor > 422274:
-                    setStep(1000*60)
-                    setStepLabel('minute')
-                    break
-                default:
-                    setStep(1)
-                    setStepLabel('second')
-
-            }
-            // if (zoomfactor >  422274) setStep(1000*60)
-            // if (zoomfactor >  4275383) setStep(1000*60*60)
-            // if (zoomfactor >  14544702) setStep(1000*60*60*24)
-            // if (zoomfactor > 120426316) setStep(1000*60*60*24*30)
-                    
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
             set({ 
@@ -163,6 +128,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
         // if(!active) onFinalDateChange(scaledate)  
         
         if(!active) {
+            console.log('not active')
             offset.current[1] -= (startdate.getTime() - lastStartdate.getTime())  / zoomfactor
             // console.log(offset.current[1]+ ' /  '+ (startdate.getTime() - lastStartdate.getTime()))
             setScaledate(startdate)
@@ -178,6 +144,32 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     useEffect(() => {
         onStepChange(stepLabel)
     },[stepLabel])
+
+    useEffect(() => {
+        // console.log(zoomfactor)
+        switch (true) {
+            case zoomfactor > 120426316:
+                setStep(1000*60*60*24*30)
+                setStepLabel('month')
+                break
+            case zoomfactor > 14544702:
+                setStep(1000*60*60*24)
+                setStepLabel('day')
+                break
+            case zoomfactor > 735259:
+                setStep(1000*60*60)
+                setStepLabel('hour')
+                break
+            case zoomfactor > 32274:
+                setStep(1000*60)
+                setStepLabel('minute')
+                break
+            default:
+                setStep(1000)
+                setStepLabel('second')
+        }
+},[zoomfactor])
+
 
 
     return (

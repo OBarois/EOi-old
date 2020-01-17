@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
 import {useSpring, animated, config} from 'react-spring'
 import { useGesture, useDrag } from 'react-use-gesture'
-import {Spring} from 'react-spring/renderprops'
 import "./controlpanel.css"
 
 // import MissionSelector from "./missionselector";
