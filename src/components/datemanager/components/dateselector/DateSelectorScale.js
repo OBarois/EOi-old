@@ -182,7 +182,7 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
     useLayoutEffect(() => {
         setTimescale(scaleText(date,zoomfactor))
-    },[ zoomfactor])
+    },[ zoomfactor,date])
 
     const [{ opaciter }, setOpaciter] = useSpring( () => ({ opaciter: 0}) )
     useEffect(() => {
@@ -204,9 +204,6 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
     },[step])
 
-    useLayoutEffect(() => {
-        setTimescale(scaleText(date,zoomfactor))
-    },[date])
 
 
     return (

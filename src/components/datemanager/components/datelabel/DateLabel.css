@@ -53,7 +53,7 @@
     left: 53px;
     /* display: flex; 
     justify-content: center; */
-    flex-direction: column;
+    /* flex-direction: column; */
   
     margin-top: 5px;
   }

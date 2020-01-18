@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import WorldWind from "webworldwind-esa";
 import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
-
+import modelsLayer from './satelliteLayer';
 
 // BasicWorldWindowController.prototype.applyLimits = function () {
 //     var navigator = this.wwd.navigator;
@@ -74,12 +74,22 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         setTimeout(runOperation, 10);
     }
 
-
+    // useEffect(() => {
+    //     console.log('toggleStarfield')
+    //     getLayerByName('StarField').enabled = !getLayerByName('StarField').enabled
+    //     eww.current.redraw();
+    // }, [starfield]);
 
     //toggle atmosphere
     function toggleAtmosphere() {
         console.log('toggleAtmosphere')
         getLayerByName('Atmosphere').enabled = !getLayerByName('Atmosphere').enabled
+        eww.current.redraw();
+    }
+    //toggle model
+    function toggleModel() {
+        console.log('toggleModel')
+        getLayerByName('Model').enabled = !getLayerByName('Model').enabled
         eww.current.redraw();
     }
 
@@ -502,7 +512,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
     // didMount effect
     useEffect(() => {
-        console.log("useEffect (mount) in Eww  star/atmo: "+ starfield+'/'+atmosphere)
+        console.log("Creating the world...")
 
         // to use DEM from Eox ESA Map server
         var elevationModel = new WorldWind.ElevationModel();
@@ -581,9 +591,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             levelZeroDelta: new WorldWind.Location(90, 90)
         }
 
-        console.log(WorldWind.configuration.baseUrl)
         WorldWind.configuration.baseUrl = WorldWind.configuration.baseUrl.slice(0,-3)
-        console.log(WorldWind.configuration.baseUrl)
 
         //let starFieldLayer = new WorldWindX.StarFieldLayer();
         // let starFieldLayer = new WorldWind.StarFieldLayer();
@@ -601,7 +609,8 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
             { layer: starFieldLayer, enabled: starfield },
             { layer: atmosphereLayer, enabled: atmosphere },
-            { layer: quicklookLayer, enabled: true }
+            { layer: quicklookLayer, enabled: true },
+            { layer: modelsLayer, enabled: false }
         ];
     
         for (let l = 0; l < layers.length; l++) {
@@ -623,5 +632,5 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     }, []); // effect runs only once
         
   
-  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, toggleBg, northUp };
+  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, toggleModel, toggleBg, northUp };
 }

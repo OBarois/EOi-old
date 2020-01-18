@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import React, { useEffect} from 'react'
 import './Earth.css'
 import { useEww } from "./useEww"
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -20,6 +20,7 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
         toggleStarfield,
         toggleNames,
         toggleBg,
+        toggleModel,
         setTime,
         northUp
     } = useEww({
@@ -39,10 +40,23 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     useHotkeys("c",removeGeojson)
     useHotkeys("u",northUp)
     useHotkeys("b",toggleBg)
+    useHotkeys("m",toggleModel)
 
     useEffect(() => {
         setTime(viewdate.getTime())
-    },[viewdate])
+    },[viewdate, setTime])
+
+    useEffect(() => {
+        toggleStarfield()
+    },[starfield])
+
+    useEffect(() => {
+        toggleNames()
+    },[names])
+
+    useEffect(() => {
+        toggleAtmosphere()
+    },[atmosphere])
 
 
 
