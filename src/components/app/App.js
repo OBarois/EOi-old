@@ -19,9 +19,9 @@ function App() {
     const [startdate, ] = useState(initdate)
     const [searching, ] = useState(false)
     const [collection, setCollection] = useState('S1')
-    const [starfield, setStarfield] = useState(true)
-    const [atmosphere, setAtmosphere] = useState(true)
-    const [names, setNames] = useState(true)
+    const [starfield, setStarfield] = useState(false)
+    const [atmosphere, setAtmosphere] = useState(false)
+    const [names, setNames] = useState(false)
 
     const changeDate = (newdate) => {
         // console.log('App changeDate callback: ' + newdate.toJSON())
