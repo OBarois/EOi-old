@@ -4,7 +4,7 @@ import DateController from './components/datecontroller'
 import DateSelector from './components/dateselector'
 
 
-function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
+function DateManager({startdate, onDateChange, onFinalDateChange, animated}) {
 
     const [selectorStartdate, setselectorStartdate] = useState(startdate)
     const [controllerStartdate, setcontrollerStartdate] = useState(startdate)
@@ -21,7 +21,7 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
     const handleSelectorFinalDateChange = (date) => {
         // console.log('handleSelectorFinalDateChange:' + date.toJSON())
         setcontrollerStartdate(date)
-        // onFinalDateChange(date)
+        onFinalDateChange(date)
     }
     
     const handleControllerDateChange = (date) => {
@@ -44,7 +44,7 @@ function DateManager({startdate, onDateChange, onFinalDateChange, searching}) {
     return (
         <div >
           <DateController startdate={controllerStartdate} onDateChange={handleControllerDateChange}/>
-          <DateLabel date={labeldate} highlight='none' animated={searching} highlight={dateLabelHighlight}/>
+          <DateLabel date={labeldate} animated={animated} highlight={dateLabelHighlight}/>
           <DateSelector startdate={selectorStartdate} 
                 onDateChange={handleSelectorDateChange} 
                 onFinalDateChange={handleSelectorFinalDateChange} 

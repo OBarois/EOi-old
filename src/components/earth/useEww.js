@@ -81,9 +81,9 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     // }, [starfield]);
 
     //toggle atmosphere
-    function toggleAtmosphere() {
+    function setAtmosphere(bool) {
         console.log('toggleAtmosphere')
-        getLayerByName('Atmosphere').enabled = !getLayerByName('Atmosphere').enabled
+        getLayerByName('Atmosphere').enabled = bool
         eww.current.redraw();
     }
     //toggle model
@@ -94,16 +94,16 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     }
 
     //toggle starField
-    function toggleStarfield() {
+    function setStarfield(bool) {
         console.log('toggleStarfield')
-        getLayerByName('StarField').enabled = !getLayerByName('StarField').enabled
+        getLayerByName('StarField').enabled = bool
         eww.current.redraw();
     }
 
     //toggle name overlay
-    function toggleNames() {
+    function setNames(bool) {
         console.log('toggleNames')
-        getLayerByName('overlay_bright').enabled = !getLayerByName('overlay_bright').enabled
+        getLayerByName('overlay_bright').enabled = bool
         eww.current.redraw();
     }
     //toggle background overlay
@@ -632,5 +632,5 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     }, []); // effect runs only once
         
   
-  return { ewwstate, removeGeojson, addGeojson, addWMS, toggleStarfield, toggleAtmosphere, setTime, toggleProjection, toggleNames, toggleModel, toggleBg, northUp };
+  return { ewwstate, removeGeojson, addGeojson, addWMS, setStarfield, setAtmosphere, setTime, toggleProjection, setNames, toggleModel, toggleBg, northUp };
 }

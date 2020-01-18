@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {useSpring, animated, config} from 'react-spring'
+import {useSpring, animated} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
 import DateSelectorScale from './DateSelectorScale'
@@ -168,7 +168,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 setStep(1000)
                 setStepLabel('second')
         }
-},[zoomfactor])
+    },[zoomfactor])
 
 
 

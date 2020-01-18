@@ -35,7 +35,7 @@ function DateController({startdate, onDateChange}) {
         onDateChange(date)
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
-    },[date]);
+    },[date, onDateChange]);
 
     // useEffect(() => {
     //     // console.log("date from datemanager: "+new Date(date).toJSON())

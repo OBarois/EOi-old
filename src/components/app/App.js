@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
+import { useGlobal } from 'reactn';
+
 import './App.css'
 import Earth from '../earth'
 import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
 import ControlPanel from "../controlpanel";
-import MissionSelector from "../missionselector";
-import MapSelector from "../mapselector";
+import C_MissionSelector from "../../containers/MissionSelectorContainer";
+import C_MapSelector from "../../containers/MapSelectorContainer";
 
 // import useToggle from 'react-use/lib/useToggle'
 import Fullscreen from "react-full-screen"
@@ -17,37 +19,23 @@ function App() {
     let initdate = new Date()
     const [viewdate, setViewdate] = useState(initdate)
     const [startdate, ] = useState(initdate)
-    const [searching, ] = useState(false)
-    const [collection, setCollection] = useState('S1')
-    const [starfield, setStarfield] = useState(false)
-    const [atmosphere, setAtmosphere] = useState(false)
-    const [names, setNames] = useState(false)
+    const [searching, setSearching] = useState(false)
+    // const [collection, setCollection] = useState('S1')
+
+    const [ mission,  ] = useGlobal('mission');
+    const [ mapSettings, ] = useGlobal('mapSettings')
 
     const changeDate = (newdate) => {
         // console.log('App changeDate callback: ' + newdate.toJSON())
         setViewdate(newdate)
     }
 
-
-    const changeCollection = (mission) => {
-        console.log('new collection: ' + mission)
-        setCollection(mission)
+    const finalChangeDate = (date) => {
+        console.log('Final Date: ' + date.toJSON())
+        // setSearching(true)
     }
 
-    const toggleStarfield = () => {
-        console.log('Starfield')
-        setStarfield(!starfield)
-    }
 
-    const toggleAtmosphere = () => {
-        console.log('atmosphere')
-        setAtmosphere(!atmosphere)
-    }
-
-    const toggleNames = () => {
-        console.log('atmosphere')
-        setNames(!names)
-    }
 
       
     useEffect(() => {
@@ -63,14 +51,14 @@ function App() {
         <div className="App" >
             <Fullscreen enabled={isFull} onChange={() =>  {if(!isFullscreen) setIsfull(false)} }>
                 <div className="Earth">
-                    <Earth viewdate={viewdate} id="globe" starfield={starfield} atmosphere={atmosphere} names={names}  clon='0.5' clat='40' />
+                    <Earth viewdate={viewdate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names}  clon='0.5' clat='40' />
                 </div>
-                <DateManager startdate={startdate}  searching={searching} onDateChange={changeDate} />
+                <DateManager startdate={startdate} onDateChange={changeDate} onFinalDateChange={finalChangeDate} animated={searching}/>
                 <ControlPanel active="true">
-                <MissionSelector  onMissionChange={changeCollection}></MissionSelector>
-                <MapSelector  toggleStarfield={toggleStarfield} toggleNames={toggleNames} toggleAtmosphere={toggleAtmosphere}></MapSelector>
+                <C_MissionSelector></C_MissionSelector>
+                <C_MapSelector ></C_MapSelector>
                 </ControlPanel>
-                <div className='MissionLabel'>{collection}</div>
+                <div className='MissionLabel'>{mission}</div>
             </Fullscreen>
         </div>
     )

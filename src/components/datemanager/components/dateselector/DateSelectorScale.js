@@ -56,11 +56,11 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
             switch (true) {
                 case _zoom < MIN_LEVEL:
-                    if(minute != lastminute) {
-                        if (minute != 0 || hour != 0) {
+                    if(minute !== lastminute) {
+                        if (minute !== 0 || hour !== 0) {
                             tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':'+pad(minute,2)})
                         } else {
-                            if (minute == 0 && hour == 0) {
+                            if (minute === 0 && hour === 0) {
                                 tics.push({class:'DayTic_h', pos: i, label: day})
                                 tics.push({class:'MonthTic_h2', pos: i, label: monthcode[month]})
                                 //tics.push({class:'YearTic_h', pos: i, label: year})
@@ -70,11 +70,11 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
                 break
 
                 case _zoom < MIN10_LEVEL:
-                    if(minute != lastminute) {
-                        if( (minute != 0 || hour !=0) && minute % 10 === 0) {
+                    if(minute !== lastminute) {
+                        if( (minute !== 0 || hour !=0) && minute % 10 === 0) {
                             tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':'+pad(minute,2)})
                         } else {
-                            if (minute == 0 && hour == 0) {
+                            if (minute === 0 && hour === 0) {
                                 tics.push({class:'DayTic_h', pos: i, label: day})
                                 tics.push({class:'MonthTic_h2', pos: i, label: monthcode[month]})
                                 //tics.push({class:'YearTic_h', pos: i, label: year})
@@ -84,8 +84,8 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
                 break
 
                 case _zoom < HOUR_LEVEL:
-                    if(hour != lasthour) {
-                        if (hour != 0) {
+                    if(hour !== lasthour) {
+                        if (hour !== 0) {
                             tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':00'})
                         
                         } else  {
@@ -97,11 +97,11 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
                 break
 
                 case _zoom < HOUR3_LEVEL:
-                    if(hour != lasthour) {
-                        if (hour != 0 &&  (hour % 3 === 0 )) {
+                    if(hour !== lasthour) {
+                        if (hour !== 0 &&  (hour % 3 === 0 )) {
                             tics.push({class:'HourTic', pos: i, label: pad(hour,2)+':00'})
                         } else  {
-                            if (hour == 0) {
+                            if (hour === 0) {
                                 tics.push({class:'DayTic_h', pos: i, label: day})
                                 tics.push({class:'MonthTic_h2', pos: i, label: monthcode[month]})
                                 // tics.push({class:'YearTic_h', pos: i, label: year})            
@@ -112,11 +112,11 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
                 case _zoom < DAY_LEVEL:
                     if(day !== lastday) {
-                        if ( day != 1 ) {
+                        if ( day !== 1 ) {
                             tics.push({class:'DayTic', pos: i, label: day})
                         } else {
                             tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
-                            if (month == 0) tics.push({class:'YearTic_h2', pos: i, label: year})
+                            if (month === 0) tics.push({class:'YearTic_h2', pos: i, label: year})
                             // tics.push({class:'YearTic_h2', pos: i, label: year})
                          }
                         
@@ -125,13 +125,13 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
                 case _zoom < DAY5_LEVEL:
                     if(day !== lastday) {
-                        if ( day != 1 && day !=30 && day % 5 === 0 ) {
+                        if ( day !== 1 && day !== 30 && day % 5 === 0 ) {
                             tics.push({class:'DayTic', pos: i, label: day})
                         } else {
                             if (day == 1) {
                                 // tics.push({class:'DayTic', pos: i, label: day})
                                 tics.push({class:'MonthTic_h', pos: i, label: monthcode[month]})
-                                if (month == 0) tics.push({class:'YearTic_h2', pos: i, label: year})
+                                if (month === 0) tics.push({class:'YearTic_h2', pos: i, label: year})
                                 // tics.push({class:'YearTic_h2', pos: i, label: year})
                             }
                          }
@@ -163,6 +163,9 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
                     }
     
                 break
+
+                default:
+                break
             }
             lastday = day
             lastyear = year
@@ -184,7 +187,7 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
         setTimescale(scaleText(date,zoomfactor))
     },[ zoomfactor,date])
 
-    const [{ opaciter }, setOpaciter] = useSpring( () => ({ opaciter: 0}) )
+    // const [{ opaciter }, setOpaciter] = useSpring( () => ({ opaciter: 0}) )
     useEffect(() => {
 
         console.log('step changed to: '+step)

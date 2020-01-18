@@ -6,22 +6,23 @@ import './MapSelector.css'
 
 // should use a prop
 
-function MapSelector({toggleAtmosphere, toggleStarfield, toggleNames}) {
+function MapSelector({onMapSettingsChange}) {
 
 
-    // const [map, setMap] = useState({starfield: true, names: true, atmosphere: true})
-    
-    // useHotkeys("1",()=>{setMission('S1')}) 
-    // useHotkeys("2",()=>{setMission('S2')}) 
-    // useHotkeys("3",()=>{setMission('S3')}) 
-    // useHotkeys("5",()=>{setMission('S5P')}) 
-    // useHotkeys("6",()=>{setMission('ENVISAT')})
+    const [mapSettings, setMapSettings] = useState({starfield: true, names: true, atmosphere: true})
+    const toggleAtmosphere = () => setMapSettings((mapSettings)=>({...mapSettings, atmosphere:!mapSettings.atmosphere}))
+    const toggleStarfield = () => setMapSettings((mapSettings)=>({...mapSettings, starfield:!mapSettings.starfield}))
+    const toggleNames = () => setMapSettings((mapSettings)=>({...mapSettings, names:!mapSettings.names}))
 
-    // useEffect(() => {
-    //     console.log('Map changed to: '+ map)
-    //     onMapChange(map)
-    // }, [map]);
-    
+    useHotkeys("a",toggleAtmosphere)  
+    useHotkeys("s",toggleStarfield)  
+    useHotkeys("n",toggleNames)  
+
+    useEffect(() => {
+        onMapSettingsChange(mapSettings)
+    }, [mapSettings, onMapSettingsChange]);
+
+
     
     //console.log('mission rendering')
     return (
