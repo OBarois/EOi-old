@@ -74,7 +74,11 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         setTimeout(runOperation, 10);
     }
 
-
+    // useEffect(() => {
+    //     console.log('toggleStarfield')
+    //     getLayerByName('StarField').enabled = !getLayerByName('StarField').enabled
+    //     eww.current.redraw();
+    // }, [starfield]);
 
     //toggle atmosphere
     function toggleAtmosphere() {

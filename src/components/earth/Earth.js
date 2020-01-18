@@ -46,6 +46,18 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
         setTime(viewdate.getTime())
     },[viewdate, setTime])
 
+    useEffect(() => {
+        toggleStarfield()
+    },[starfield])
+
+    useEffect(() => {
+        toggleNames()
+    },[names])
+
+    useEffect(() => {
+        toggleAtmosphere()
+    },[atmosphere])
+
 
 
     let globeStyle = {
