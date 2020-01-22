@@ -150,12 +150,12 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
         }
     },[startdate])
 
-    useEffect(() => {
-        console.log('laststartdate changed: '+lastStartdate.toJSON())
-    },[lastStartdate])
+    // useEffect(() => {
+    //     console.log('laststartdate changed: '+lastStartdate.toJSON())
+    // },[lastStartdate])
 
     useEffect(() => {
-        console.log('active: '+active)
+        console.log('Selector active: '+active)
     },[active])
 
 

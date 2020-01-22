@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 
 export function useClock({ autoStart, initdate }) {
-    //console.log('useClock renders')
+    // console.log('useClock renders')
     //const { autoStart, duration } = settings || {};
   
     // let initDate = startdate
@@ -92,7 +92,7 @@ export function useClock({ autoStart, initdate }) {
     }
 
     useEffect(() => {
-        // console.log('init start useclock '+initdate.toJSON())
+        console.log('init start useclock '+initdate.toJSON())
         ldate.current = initdate.getTime()
     }, [initdate])
 
