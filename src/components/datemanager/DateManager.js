@@ -27,6 +27,7 @@ function DateManager({startdate, onDateChange, onFinalDateChange, animated}) {
     const handleControllerDateChange = (date) => {
         // console.log('handleControllerDateChange' + date.toJSON())
         setselectorStartdate(date)
+        // onFinalDateChange(date)
     }
 
     const handleSelectorStepChange = (step) => {
@@ -34,10 +35,10 @@ function DateManager({startdate, onDateChange, onFinalDateChange, animated}) {
         setDateLabelHighlight(step)
     }
 
-    useEffect(() => {
-        // console.log('startdate in date manager: '+startdate.toJSON())
-        setselectorStartdate(startdate)
-    },[startdate])
+    // useEffect(() => {
+    //     // console.log('startdate in date manager: '+startdate.toJSON())
+    //     setselectorStartdate(startdate)
+    // },[startdate])
 
 
 

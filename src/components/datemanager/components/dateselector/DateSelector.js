@@ -14,9 +14,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     const DEFZOOM = 1000*60*60
     
     const selector = useRef()
-    const offset = useRef()
-    if(!offset.current) offset.current = [0, 0 ]
-
     const lastZoom = useRef()
     if(!lastZoom.current) lastZoom.current = DEFZOOM
 
@@ -26,7 +23,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
     const [lastStartdate, setlLastStartdate ] = useState(startdate)
     
-    const [newstart, setNewstart ] = useState(startdate)
     const [active, setActive ] = useState(false)
     const [step, setStep ] = useState(60000)
     const [stepLabel, setStepLabel ] = useState('hour')
@@ -37,83 +33,83 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
     // to detect double taps
     const lastTap = useRef()
-    const [doubleTapZoom, setDoubleTapZoom] = useState(false)
+    const doubleTap = useRef()
+
 
     const handleDoubleTap = () => {
         const now = Date.now();
         if (lastTap.current && (now - lastTap.current) < 300) {
-            setDoubleTapZoom(true)
+            doubleTap.current = true
         } else {
             lastTap.current = now
-            setDoubleTapZoom(false)
+            doubleTap.current = false
         }
     }
 
 
-    const [{ xy }, set] = useSpring(() => ({ xy: [0,0] }))
+    const [{ xy}, sety] = useSpring(() => ({ xy: [0,0] }))
+    const [{ xy2 }, sety2] = useSpring(() => ({ xy2: [0,0] }))
+    // const [{ zoom }, setz] = useSpring(() => ({ zoom: DEFZOOM }))
 
+
+    
     const bind = useGesture({
 
-        // onMouseDown: (event) => {
-        //     event.preventDefault()
-        //     handleDoubleTap()
-        // },
         onDragEnd: () => {
-                setDoubleTapZoom(false)
                 lastZoom.current = zoomfactor
         },
 
         onDrag: ({  event, first, down, delta, velocity, direction, temp = {
-            xy: xy.getValue(),
-            deltaoffset: [0,0],
-            lastdeltaX: 0,
-            initialzoom: zoomfactor,
+            lastzoom: zoomfactor,
+            lastdelta: [0,0],
             currentzoom: zoomfactor
             }
         }) => {
             //event.preventDefault()
             let zoom
-            // console.log(first)
-            // console.log('delta '+delta[1]+ '  temp.deltaoffset: '+temp.deltaoffset[1]+' temp.xy: '+temp.xy[1]+ ' xy.getValue()[1]: '+xy.getValue()[1])
+
             if (first) {
+                console.log('first: '+first)
                 setActive(true)
                 handleDoubleTap()
+                setlLastStartdate(scaledate)
             }
-            if (doubleTapZoom) {
-                zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdeltaX - delta[1] )
-                //zoom = temp.initialzoom + 5000000 * (MAXZOOM/(1+MAXZOOM - temp.currentzoom)) * delta[1]
+
+            if (doubleTap.current) {
+                console.log('in double tap')
+                zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdelta[1] - delta[1] )
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
-                // console.log(zoom+' / '+(zoom-1000*60*60*24))
-                
-                setNewstart(scaledate)
-                temp.xy = [0,0]
-                temp.deltaoffset = delta
+                // temp.xy = [0,0]
                 temp.currentzoom = zoom
-                temp.lastdeltaX = delta[1]
+                temp.lastdelta = delta
+                if(!down) setActive(false)
+                return temp
             }
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
-            set({ 
-                xy: (doubleTapZoom)?temp.xy:add(add(sub(delta,temp.deltaoffset),offset.current), temp.xy), 
+
+            sety({                 
+                xy: delta, 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
-                    if (!doubleTapZoom) {
-                        let newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                    // console.log('y / deltay:  '+xy.getValue()[1]+'/ '+delta[1])
+                    if (!first) {
+                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
                         setScaledate(newdate)
-                        setlLastStartdate(newdate)
-    
-                    }
+                        onDateChange(newdate)
+                        }
+
+                    // setlLastStartdate(newdate)
                 },
                 onRest: ()=>{
-                    if (!down ) {
+                    if (!down) {
                         setActive(false)
-                        let newdate = new Date(newstart.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
                         onFinalDateChange(newdate)
-                        offset.current = [0,0]
-    
+                        setlLastStartdate(newdate)
                     }
                 }
             })
@@ -122,31 +118,52 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     })
 
 
+    const moveToDate = (startdate) => {
+        if (!active) {
+            let deltaoffset = [0,(lastStartdate.getTime() - startdate.getTime())  / zoomfactor]
+            
+            sety2({ 
+                xy2: deltaoffset,
+                immediate: false, 
+                config: {reset: true },
+                onFrame: ()=>{
+                    let newdate = new Date(lastStartdate.getTime() - xy2.getValue()[1] * zoomfactor)
+                    setScaledate(newdate)
+                    onDateChange(newdate)
+                },
+                onRest: ()=>{
+                    setActive(false)
+                    let newdate = new Date(lastStartdate.getTime() - xy2.getValue()[1] * zoomfactor)
+                    xy2.setValue([0,0])
+                    setScaledate(newdate)
+                    setlLastStartdate(newdate)
+                }
+            })
+        }
 
+    }
 
     useEffect(() => {
-        // if(!active) onFinalDateChange(scaledate)  
-        
+        console.log('startdate changed')
         if(!active) {
-            console.log('not active')
-            offset.current[1] -= (startdate.getTime() - lastStartdate.getTime())  / zoomfactor
-            // console.log(offset.current[1]+ ' /  '+ (startdate.getTime() - lastStartdate.getTime()))
-            setScaledate(startdate)
-            setlLastStartdate(startdate)
-            // onDateChange(startdate)
+            moveToDate(startdate)
         }
     },[startdate])
 
     useEffect(() => {
-        onDateChange(scaledate)
-    },[scaledate])
+        console.log('laststartdate changed: '+lastStartdate.toJSON())
+    },[lastStartdate])
+
+    useEffect(() => {
+        console.log('active: '+active)
+    },[active])
+
 
     useEffect(() => {
         onStepChange(stepLabel)
     },[stepLabel])
 
     useEffect(() => {
-        // console.log(zoomfactor)
         switch (true) {
             case zoomfactor > 120426316:
                 setStep(1000*60*60*24*30)
@@ -170,13 +187,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
         }
     },[zoomfactor])
 
+    
 
 
     return (
         <animated.div {...bind()} className='DateSelector' ref={selector} >
             <div className="Mask"  >
 
-                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} immediate={active} step={step}></DateSelectorScale>
+                <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} step={step}></DateSelectorScale>
                 
                 <div className="TriangleContainer" >
                     <svg height="40" width="20" className="Triangle">

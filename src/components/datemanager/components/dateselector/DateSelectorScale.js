@@ -2,7 +2,7 @@ import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
 import {useSpring, animated} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale({date, zoomfactor, immediate, step}) {
+function DateSelectorScale({date, zoomfactor,  step}) {
 
     const scale = useRef()
     const [opacity, setOpacity] = useState(1)    
@@ -184,6 +184,7 @@ function DateSelectorScale({date, zoomfactor, immediate, step}) {
 
 
     useLayoutEffect(() => {
+        // console.log('zoomfactor / date: '+zoomfactor + '/ ' + date)
         setTimescale(scaleText(date,zoomfactor))
     },[ zoomfactor,date])
 
