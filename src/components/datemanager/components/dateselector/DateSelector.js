@@ -47,8 +47,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     }
 
 
-    const [{ xy}, sety] = useSpring(() => ({ xy: [0,0] }))
+    const [{ posxy_drag}, setyOnDrag] = useSpring(() => ({ posxy_drag: [0,0]  }))
     const [{ xy2 }, sety2] = useSpring(() => ({ xy2: [0,0] }))
+    const [{ posxy_wheel }, setyOnWheel] = useSpring(() => ({posxy_wheel: [0,0] }))
     // const [{ zoom }, setz] = useSpring(() => ({ zoom: DEFZOOM }))
 
 
@@ -57,6 +58,34 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
         onDragEnd: () => {
                 lastZoom.current = zoomfactor
+        },
+
+        onWheel: ( {delta, first, down, direction, velocity, xy} ) => {
+            console.log(down)
+            setyOnWheel({                 
+                posxy_wheel: xy, 
+                immediate: false, 
+                config: { },
+                onFrame: ()=>{
+                    console.log('posy / deltay:  '+posxy_wheel.getValue()[1]+'/ '+delta[1])
+                    if (!first) {
+                        let newdate = new Date(lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step)
+                        setScaledate(newdate)
+                        onDateChange(newdate)
+                        }
+
+                    // setlLastStartdate(newdate)
+                },
+                onRest: ()=>{
+                    if (!down) {
+                        setActive(false)
+                        let newdate = new Date(lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step)
+                        onFinalDateChange(newdate)
+                        setlLastStartdate(newdate)
+                    }
+                }
+            })
+
         },
 
         onDrag: ({  event, first, down, delta, velocity, direction, shiftKey, temp = {
@@ -90,14 +119,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
 
-            sety({                 
-                xy: delta, 
+            setyOnDrag({                 
+                posxy_drag: delta, 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
                     // console.log('y / deltay:  '+xy.getValue()[1]+'/ '+delta[1])
                     if (!first) {
-                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step)
                         setScaledate(newdate)
                         onDateChange(newdate)
                         }
@@ -107,7 +136,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 onRest: ()=>{
                     if (!down) {
                         setActive(false)
-                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(xy.getValue()[1] * zoomfactor  / step) * step)
+                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step)
                         onFinalDateChange(newdate)
                         setlLastStartdate(newdate)
                     }
@@ -116,7 +145,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             return temp
         }
     },
-    {filterTaps: true}
+    {}
     )
 
 
