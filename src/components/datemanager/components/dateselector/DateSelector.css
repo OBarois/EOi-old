@@ -4,10 +4,10 @@
     position: fixed;
     top: 0px;
     right: 0px;
-    width: 65px;
+    width: 68px;
     height: 100%;
-    background: rgba(157, 82, 219, 0);
-    border-radius: 8px;
+    background: rgba(79, 77, 80, 0.507);
+    /* border-radius: 8px; */
     z-index: 100;
   }
 
@@ -104,7 +104,7 @@
     position: absolute;
     pointer-events: none;
     font-size: 12px; 
-    margin-top: 12px;
+    margin-top: 0px;
     right: 10px
 }
 .HourTic {

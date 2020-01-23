@@ -14,7 +14,7 @@
     "react-hotkeys-hook": "^1.5.4",
     "react-spring": "^8.0.22",
     "react-use": "^9.5.0",
-    "react-use-gesture": "^5.1.1",
+    "react-use-gesture": "^6.0.14",
     "reactn": "^2.2.4",
     "vec-la": "^1.5.0",
     "webworldwind-esa": "github:OBarois/WebWorldWind-ESA#ImprovedNav"
