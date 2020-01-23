@@ -59,7 +59,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 lastZoom.current = zoomfactor
         },
 
-        onDrag: ({  event, first, down, delta, velocity, direction, temp = {
+        onDrag: ({  event, first, down, delta, velocity, direction, shiftKey, temp = {
             lastzoom: zoomfactor,
             lastdelta: [0,0],
             currentzoom: zoomfactor
@@ -69,13 +69,13 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             let zoom
 
             if (first) {
-                console.log('first: '+first)
+                console.log('shiftKey: '+shiftKey)
                 setActive(true)
                 handleDoubleTap()
                 setlLastStartdate(scaledate)
             }
 
-            if (doubleTap.current) {
+            if (doubleTap.current || shiftKey) {
                 console.log('in double tap')
                 zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdelta[1] - delta[1] )
                 if (zoom < MINZOOM) zoom = MINZOOM
@@ -115,7 +115,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             })
             return temp
         }
-    })
+    },
+    {filterTaps: true}
+    )
 
 
     const moveToDate = (startdate) => {
