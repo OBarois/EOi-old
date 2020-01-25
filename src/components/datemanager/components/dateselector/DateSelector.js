@@ -20,6 +20,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
     
     const [scaledate, setScaledate ] = useState(startdate)
     // const debouncedScaledate = useDebounce(scaledate, 10);
+    
 
     const [lastStartdate, setlLastStartdate ] = useState(startdate)
     
@@ -60,27 +61,47 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 lastZoom.current = zoomfactor
         },
 
-        onWheel: ( {delta, first, down, direction, velocity, xy} ) => {
-            console.log(down)
+        onWheel: ( {delta, movement, shiftKey, first, last, down, direction, velocity, memo = {lastposxy: posxy_wheel.getValue()} } ) => {
+            if (first) {
+                setActive(true)
+                setlLastStartdate(scaledate)
+            }
+
+            // let nd = lastStartdate.getTime() + Math.ceil(delta[1] * zoomfactor  / step) * step
+            // let newdate = new Date(nd)
+            // setScaledate(newdate)
+            // onDateChange(newdate)
+            // onFinalDateChange(newdate)
+
+
+
             setyOnWheel({                 
-                posxy_wheel: xy, 
+                posxy_wheel: movement, // must be cummulative
                 immediate: false, 
-                config: { },
+                // config: { },
+                // reset: true,
                 onFrame: ()=>{
-                    console.log('posy / deltay:  '+posxy_wheel.getValue()[1]+'/ '+delta[1])
+                    // console.log('posy / deltay:  '+posxy_wheel.getValue()[1]+'/ '+delta[1]+'/ '+movement[1])
+                        // console.log("wheel frame: lastStartDate / posxy_wheel / y"+lastStartdate.getTime()+"/ "+posxy_wheel.getValue()[1])
                         let nd = lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step
                         let newdate = new Date(nd)
                         setScaledate(newdate)
                         onDateChange(newdate)
 
-
                     // setlLastStartdate(newdate)
                 },
                 onRest: ()=>{
-                    if (!down) {
+                    if (last) {
                         setActive(false)
-                        onFinalDateChange(scaledate)
-                        setlLastStartdate(scaledate)
+                        console.log("end wheel y / posxy: "+"/ "+posxy_wheel.getValue()[1])
+                        let nd = lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step
+                        let newdate = new Date(nd)
+                        setScaledate(newdate)
+                        onFinalDateChange(newdate)
+                        setlLastStartdate(newdate)
+                        console.log(movement[1])
+                        // posxy_wheel.setValue([0,0])
+                        
                     }
                 }
             })

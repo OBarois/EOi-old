@@ -111,8 +111,6 @@
     position: absolute;
     pointer-events: none;
     font-size: 12px; 
-    opacity: 0;
-    transition: opacity 2s ;
     /* color: rgba(235, 214, 119, 0.5);*/
     right: 12px
 }

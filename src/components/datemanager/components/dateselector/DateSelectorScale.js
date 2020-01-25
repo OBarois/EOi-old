@@ -5,15 +5,6 @@ import './DateSelector.css';
 function DateSelectorScale({date, zoomfactor}) {
 
     const scale = useRef()
-    const [opacity, setOpacity] = useState(1)    
-    const [active, setActive] = useState(false)    
-    const [timescale, setTimescale] = useState('')    
-    // const [zoom, setZoom] = useState(zoomfactor)    
-
-
-    useEffect(() => {  
-        return () => {}          
-    })
         
     const scaleText = (_start, _zoom) => {
         // console.log('_start: '+_start.toJSON()+'  zoom: '+_zoom)
@@ -174,26 +165,12 @@ function DateSelectorScale({date, zoomfactor}) {
             lastminute = minute
         }
       
-        return tics.map(item => ( <div className={item.class} key={item.class+item.pos} style={{top:item.pos,opacity:opacity}}>{item.label}</div>))
+        return tics.map(item => ( <div className={item.class} key={item.class+item.pos} style={{top:item.pos}}>{item.label}</div>))
     }
-
-
-    // useLayoutEffect(() => {
-    //     setTimescale(scaleText(date,zoomfactor))
-    // },[date,zoomfactor])
-
-
-    useLayoutEffect(() => {
-        // console.log('zoomfactor / date: '+zoomfactor + '/ ' + date)
-        setTimescale(scaleText(date,zoomfactor))
-    },[ zoomfactor,date])
-
-
-
 
     return (
         <div ref={scale} className='DateSelectorScale' >
-            {timescale}
+            {(scaleText(date,zoomfactor))}
         </div>
     )
 }
