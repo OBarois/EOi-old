@@ -68,27 +68,26 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 config: { },
                 onFrame: ()=>{
                     console.log('posy / deltay:  '+posxy_wheel.getValue()[1]+'/ '+delta[1])
-                    if (!first) {
-                        let newdate = new Date(lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step)
+                        let nd = lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step
+                        let newdate = new Date(nd)
                         setScaledate(newdate)
                         onDateChange(newdate)
-                        }
+
 
                     // setlLastStartdate(newdate)
                 },
                 onRest: ()=>{
                     if (!down) {
                         setActive(false)
-                        let newdate = new Date(lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step)
-                        onFinalDateChange(newdate)
-                        setlLastStartdate(newdate)
+                        onFinalDateChange(scaledate)
+                        setlLastStartdate(scaledate)
                     }
                 }
             })
 
         },
 
-        onDrag: ({  event, first, down, delta, velocity, direction, shiftKey, temp = {
+        onDrag: ({  event, first, down, movement, delta, velocity, direction, shiftKey, temp = {
             lastzoom: zoomfactor,
             lastdelta: [0,0],
             currentzoom: zoomfactor
@@ -120,13 +119,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             velocity = (Math.abs(velocity)<.2)?0:velocity  
 
             setyOnDrag({                 
-                posxy_drag: delta, 
+                posxy_drag: movement, 
                 immediate: down, 
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
                     // console.log('y / deltay:  '+xy.getValue()[1]+'/ '+delta[1])
                     if (!first) {
-                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step)
+                        let nd = lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step
+                        let newdate = new Date(nd)
                         setScaledate(newdate)
                         onDateChange(newdate)
                         }
@@ -136,9 +136,8 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 onRest: ()=>{
                     if (!down) {
                         setActive(false)
-                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step)
-                        onFinalDateChange(newdate)
-                        setlLastStartdate(newdate)
+                        onFinalDateChange(scaledate)
+                        setlLastStartdate(scaledate)
                     }
                 }
             })
