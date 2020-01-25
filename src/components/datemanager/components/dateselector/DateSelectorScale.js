@@ -2,7 +2,7 @@ import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
 import {useSpring, animated} from 'react-spring'
 import './DateSelector.css';
 
-function DateSelectorScale({date, zoomfactor,  step}) {
+function DateSelectorScale({date, zoomfactor}) {
 
     const scale = useRef()
     const [opacity, setOpacity] = useState(1)    
@@ -174,7 +174,7 @@ function DateSelectorScale({date, zoomfactor,  step}) {
             lastminute = minute
         }
       
-        return tics.map(item => ( <animated.div className={item.class} key={item.class+item.pos} style={{top:item.pos,opacity:opacity}}>{item.label}</animated.div>))
+        return tics.map(item => ( <div className={item.class} key={item.class+item.pos} style={{top:item.pos,opacity:opacity}}>{item.label}</div>))
     }
 
 
@@ -188,32 +188,13 @@ function DateSelectorScale({date, zoomfactor,  step}) {
         setTimescale(scaleText(date,zoomfactor))
     },[ zoomfactor,date])
 
-    // const [{ opaciter }, setOpaciter] = useSpring( () => ({ opaciter: 0}) )
-    useEffect(() => {
-
-        console.log('step changed to: '+step)
-        // //if (Math.abs(zoomfactor-1000*60*60*24)< 1000*60*60*24) zoom = 1000*60*60*24
-        // setOpaciter({ 
-        //     to: {
-        //         opaciter: 1
-        //     },
-        //     config: {  duration: 1000, resolution: 0.01,decay: true},
-        //     immediate: false,
-        //     onFrame: ()=>{
-        //         console.log('opacity:'+opaciter.value)
-        //         // setTimescale(scaleText(new Date(dater.value),zoomer.value))
-        //         setOpacity(opaciter.value)
-        //     }
-        // })
-
-    },[step])
 
 
 
     return (
-        <animated.div ref={scale} className='DateSelectorScale' >
+        <div ref={scale} className='DateSelectorScale' >
             {timescale}
-        </animated.div>
+        </div>
     )
 }
 export default DateSelectorScale

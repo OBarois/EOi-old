@@ -124,9 +124,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 immediate: down, 
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
-                    // console.log('y / deltay:  '+xy.getValue()[1]+'/ '+delta[1])
+                    console.log('posxy_drag / deltay:  '+posxy_drag.getValue()[1]+'/ '+delta[1])
                     if (!first) {
-                        let newdate = new Date(lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step)
+                        let nd = lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step
+                        let newdate = new Date(nd)
                         setScaledate(newdate)
                         onDateChange(newdate)
                         }
