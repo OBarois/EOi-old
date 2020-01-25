@@ -1,5 +1,4 @@
-import React, {useState, useEffect,useLayoutEffect, useRef} from 'react';
-import {useSpring, animated} from 'react-spring'
+import React, { useRef} from 'react';
 import './DateSelector.css';
 
 function DateSelectorScale({date, zoomfactor}) {

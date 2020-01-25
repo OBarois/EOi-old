@@ -61,11 +61,26 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 lastZoom.current = zoomfactor
         },
 
-        onWheel: ( {delta, movement, shiftKey, first, last, down, direction, velocity, memo = {lastposxy: posxy_wheel.getValue()} } ) => {
+        onWheel: ( {delta, movement, shiftKey, first,  direction, down, last, wheeling, memo = {
+            lastposxy: posxy_wheel.getValue()
+            }
+        }) => {
             if (first) {
                 setActive(true)
                 setlLastStartdate(scaledate)
             }
+            let zoom
+            console.log("b:"+movement[1])
+            if ( shiftKey) {
+                console.log('in double tap whhel '+ direction[1])
+                zoom = zoomfactor + zoomfactor / 50 * direction[1]
+                if (zoom < MINZOOM) zoom = MINZOOM
+                if (zoom > MAXZOOM) zoom = MAXZOOM
+                setZoomfactor(zoom)
+                if(!down) setActive(false)
+                return memo
+            }
+
 
             // let nd = lastStartdate.getTime() + Math.ceil(delta[1] * zoomfactor  / step) * step
             // let newdate = new Date(nd)
@@ -74,16 +89,21 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             // onFinalDateChange(newdate)
 
 
-
+            console.log(movement[1])
             setyOnWheel({                 
-                posxy_wheel: movement, // must be cummulative
-                immediate: false, 
+                // posxy_wheel: add(movement,memo.lastposxy), // must be cummulative
+                // posxy_wheel: scale(movement,0.1), // must be cummulative
+                posxy_wheel:movement,
+                // immediate: (Math.abs(movement[1])<500), 
+                immediate: false,
                 // config: { },
                 // reset: true,
                 onFrame: ()=>{
-                    // console.log('posy / deltay:  '+posxy_wheel.getValue()[1]+'/ '+delta[1]+'/ '+movement[1])
-                        // console.log("wheel frame: lastStartDate / posxy_wheel / y"+lastStartdate.getTime()+"/ "+posxy_wheel.getValue()[1])
-                        let nd = lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step
+                        let factor = Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step)
+                        if (factor == 0 && movement[1] <= 0) factor = -1
+                        if (factor == 0 && movement[1] >= 0) factor = 1
+
+                        let nd = lastStartdate.getTime() + factor * step
                         let newdate = new Date(nd)
                         setScaledate(newdate)
                         onDateChange(newdate)
@@ -91,29 +111,26 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     // setlLastStartdate(newdate)
                 },
                 onRest: ()=>{
-                    if (last) {
-                        setActive(false)
-                        console.log("end wheel y / posxy: "+"/ "+posxy_wheel.getValue()[1])
-                        let nd = lastStartdate.getTime() + Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step) * step
-                        let newdate = new Date(nd)
-                        setScaledate(newdate)
-                        onFinalDateChange(newdate)
-                        setlLastStartdate(newdate)
-                        console.log(movement[1])
-                        // posxy_wheel.setValue([0,0])
-                        
+                    setActive(false)
+                    let factor = Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step)
+                    if (factor == 0 && movement[1] <= 0) factor = -1
+                    if (factor == 0 && movement[1] >= 0) factor = 1
+
+                    let nd = lastStartdate.getTime() + factor * step
+                    let newdate = new Date(nd)
+
+                    onFinalDateChange(newdate)
+                    setlLastStartdate(newdate)
+                    if(last) {
+                        posxy_wheel.setValue([0,0])
                     }
                 }
             })
+            return memo
 
         },
 
-        onDrag: ({  event, first, down, movement, delta, velocity, direction, shiftKey, temp = {
-            lastzoom: zoomfactor,
-            lastdelta: [0,0],
-            currentzoom: zoomfactor
-            }
-        }) => {
+        onDrag: ({  event, first, direction,down, movement, delta, velocity, shiftKey }) => {
             //event.preventDefault()
             let zoom
 
@@ -125,16 +142,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             }
 
             if (doubleTap.current || shiftKey) {
-                console.log('in double tap')
-                zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdelta[1] - delta[1] )
+
+                zoom = zoomfactor + zoomfactor / 50 * ( delta[1] )
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
                 // temp.xy = [0,0]
-                temp.currentzoom = zoom
-                temp.lastdelta = delta
                 if(!down) setActive(false)
-                return temp
+                return
             }
 
             velocity = (Math.abs(velocity)<.2)?0:velocity  
@@ -162,10 +177,14 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     }
                 }
             })
-            return temp
+
         }
     },
-    {}
+    {
+        // wheel: {
+        //     initial: () => [0,0]
+        // }
+    }
     )
 
 
