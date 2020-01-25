@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {useSpring, animated} from 'react-spring'
+import {useSpring} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
 import { add, sub, scale } from 'vec-la'
 import DateSelectorScale from './DateSelectorScale'
@@ -50,7 +50,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
     const [{ posxy_drag}, setyOnDrag] = useSpring(() => ({ posxy_drag: [0,0]  }))
     const [{ xy2 }, sety2] = useSpring(() => ({ xy2: [0,0] }))
-    const [{ posxy_wheel }, setyOnWheel] = useSpring(() => ({posxy_wheel: [0,0] }))
+    const [{ posxy_wheel }, setyOnWheel, stop] = useSpring(() => ({posxy_wheel: [0,0] }))
     // const [{ zoom }, setz] = useSpring(() => ({ zoom: DEFZOOM }))
 
 
@@ -66,11 +66,11 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             }
         }) => {
             if (first) {
+                stop()
                 setActive(true)
                 setlLastStartdate(scaledate)
             }
             let zoom
-            console.log("b:"+movement[1])
             if ( shiftKey) {
                 console.log('in double tap whhel '+ direction[1])
                 zoom = zoomfactor + zoomfactor / 50 * direction[1]
@@ -82,14 +82,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             }
 
 
-            // let nd = lastStartdate.getTime() + Math.ceil(delta[1] * zoomfactor  / step) * step
-            // let newdate = new Date(nd)
-            // setScaledate(newdate)
-            // onDateChange(newdate)
-            // onFinalDateChange(newdate)
-
-
-            console.log(movement[1])
             setyOnWheel({                 
                 // posxy_wheel: add(movement,memo.lastposxy), // must be cummulative
                 // posxy_wheel: scale(movement,0.1), // must be cummulative
@@ -261,7 +253,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
 
     return (
-        <animated.div {...bind()} className='DateSelector' ref={selector} >
+        <div {...bind()} className='DateSelector' ref={selector} >
             <div className="Mask"  >
 
                 <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} step={step}></DateSelectorScale>
@@ -273,7 +265,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 </div>        
             </div>
 
-        </animated.div>
+        </div>
                                   )
 }
 export default DateSelector
