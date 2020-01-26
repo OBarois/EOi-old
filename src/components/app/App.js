@@ -3,11 +3,14 @@ import { useGlobal } from 'reactn';
 
 import './App.css'
 import Earth from '../earth'
-import DateManager from '../datemanager'
+// import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
 import ControlPanel from "../controlpanel";
-import C_MissionSelector from "../../containers/MissionSelectorContainer";
-import C_MapSelector from "../../containers/MapSelectorContainer";
+import CDateManager from "../../containers/DateManagerContainer";
+import CDateController from "../../containers/DateControllerContainer";
+
+import CMissionSelector from "../../containers/MissionSelectorContainer";
+import CMapSelector from "../../containers/MapSelectorContainer";
 
 // import useToggle from 'react-use/lib/useToggle'
 import Fullscreen from "react-full-screen"
@@ -16,31 +19,24 @@ import { useFullscreen } from '@straw-hat/react-fullscreen'
 
 function App() {
     
-    let initdate = new Date()
-    const [viewdate, setViewdate] = useState(initdate)
-    const [startdate, ] = useState(initdate)
-    const [searching, setSearching] = useState(false)
-    // const [collection, setCollection] = useState('S1')
 
     const [ mission,  ] = useGlobal('mission');
     const [ mapSettings, ] = useGlobal('mapSettings')
+    const [ viewDate,  ] = useGlobal('viewDate');
+    const [ searchDate,  ] = useGlobal('searchDate');
+  
 
-    const changeDate = (newdate) => {
-        // console.log('App changeDate callback: ' + newdate.toJSON())
-        setViewdate(newdate)
-    }
 
-    const finalChangeDate = (date) => {
-        console.log('Final Date: ' + date.toJSON())
-        // setSearching(true)
-    }
-
+    // useEffect(() => {
+    //     console.log('View Date: '+viewDate.toJSON())
+    //     // setselectorStartdate(startdate)
+    // },[viewDate])
 
 
       
     useEffect(() => {
-        // console.log('startdate changed to: '+startdate.toJSON())
-    },[startdate])
+        console.log('Search Date: '+searchDate.toJSON())
+    },[searchDate])
     
     const [isFull,setIsfull] = useState(false)
     const { isFullscreen, toggleFullscreen } = useFullscreen(window.document.body);
@@ -51,12 +47,14 @@ function App() {
         <div className="App" >
             <Fullscreen enabled={isFull} onChange={() =>  {if(!isFullscreen) setIsfull(false)} }>
                 <div className="Earth">
-                    <Earth viewdate={viewdate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names}  clon='0.5' clat='40' />
+                    <Earth viewdate={viewDate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names}  clon='0.5' clat='40' />
                 </div>
-                <DateManager startdate={startdate} onDateChange={changeDate} onFinalDateChange={finalChangeDate} animated={searching}/>
+                {/* <DateManager startdate={startdate} onDateChange={changeDate} onFinalDateChange={finalChangeDate} animated={searching}/> */}
+                <CDateManager/>
+                <CDateController/>
                 <ControlPanel active="true">
-                <C_MissionSelector></C_MissionSelector>
-                <C_MapSelector ></C_MapSelector>
+                <CMissionSelector></CMissionSelector>
+                <CMapSelector ></CMapSelector>
                 </ControlPanel>
                 <div className='MissionLabel'>{mission}</div>
             </Fullscreen>

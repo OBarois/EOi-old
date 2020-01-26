@@ -103,7 +103,6 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     // setlLastStartdate(newdate)
                 },
                 onRest: ()=>{
-                    setActive(false)
                     let factor = Math.ceil(posxy_wheel.getValue()[1] * zoomfactor  / step)
                     if (factor == 0 && movement[1] <= 0) factor = -1
                     if (factor == 0 && movement[1] >= 0) factor = 1
@@ -111,10 +110,13 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     let nd = lastStartdate.getTime() + factor * step
                     let newdate = new Date(nd)
 
+                    setScaledate(newdate)
+                    onDateChange(newdate)
                     onFinalDateChange(newdate)
                     setlLastStartdate(newdate)
                     if(last) {
                         posxy_wheel.setValue([0,0])
+                        setActive(false)
                     }
                 }
             })
@@ -163,9 +165,15 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                 },
                 onRest: ()=>{
                     if (!down) {
+                        let nd = lastStartdate.getTime() - Math.ceil(posxy_drag.getValue()[1] * zoomfactor  / step) * step
+                        let newdate = new Date(nd)
+                        setScaledate(newdate)
+                        onDateChange(newdate)
+
+                        onFinalDateChange(newdate)
+                        setlLastStartdate(newdate)
                         setActive(false)
-                        onFinalDateChange(scaledate)
-                        setlLastStartdate(scaledate)
+
                     }
                 }
             })
@@ -181,8 +189,11 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
 
     const moveToDate = (startdate) => {
+        console.log("moving to: "+ startdate.toJSON())
         if (!active) {
             let deltaoffset = [0,(lastStartdate.getTime() - startdate.getTime())  / zoomfactor]
+            console.log("deltaoffset: "+ deltaoffset)
+            setActive(true)
             
             sety2({ 
                 xy2: deltaoffset,
@@ -194,27 +205,29 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     onDateChange(newdate)
                 },
                 onRest: ()=>{
-                    setActive(false)
-                    let newdate = new Date(lastStartdate.getTime() - xy2.getValue()[1] * zoomfactor)
+                     let newdate = new Date(lastStartdate.getTime() - xy2.getValue()[1] * zoomfactor)
                     xy2.setValue([0,0])
                     setScaledate(newdate)
+                    onDateChange(newdate)
                     setlLastStartdate(newdate)
+                    onFinalDateChange(newdate)
+                    setActive(false)
                 }
             })
-        }
+        } else console.log("rejecting move")
 
     }
 
     useEffect(() => {
-        console.log('startdate changed')
         if(!active) {
+            console.log('DateSelector moving date to: '+startdate.toJSON())
             moveToDate(startdate)
         }
     },[startdate])
 
-    // useEffect(() => {
-    //     console.log('laststartdate changed: '+lastStartdate.toJSON())
-    // },[lastStartdate])
+    useEffect(() => {
+        console.log('laststartdate changed: '+lastStartdate.toJSON())
+    },[lastStartdate])
 
     useEffect(() => {
         console.log('Selector active: '+active)

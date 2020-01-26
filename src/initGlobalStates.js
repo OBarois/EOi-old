@@ -21,7 +21,11 @@ export  function initGlobalStates() {
             atmosphere: true,
             starfield: true,
             names: true
-        }
+        },
+        viewDate: new Date(),
+        searchDate: new Date(),
+        controllerDate: new Date(),
+        dateManagerDate: new Date()
     })
     
 }
