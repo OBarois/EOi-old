@@ -5,7 +5,7 @@ import DateSelector from './components/dateselector'
 
 function DateManager({startdate, onDateChange, onFinalDateChange, animated}) {
 
-    const [selectorStartdate, setSelectorStartdate] = useState(startdate)
+    // const [selectorStartdate, setSelectorStartdate] = useState(startdate)
     const [dateLabelHighlight,setDateLabelHighlight] = useState(1)
     const [dateLabelDate,setDateLabeDate] = useState(startdate)
 
@@ -19,16 +19,16 @@ function DateManager({startdate, onDateChange, onFinalDateChange, animated}) {
         onFinalDateChange(date)
     }
 
-    useEffect(() => {
-        setSelectorStartdate(startdate)
-    },[startdate]);
+    // useEffect(() => {
+    //     setSelectorStartdate(startdate)
+    // },[startdate]);
 
 
 
     return (
         <div >
           <DateLabel date={dateLabelDate} animated={animated} highlight={dateLabelHighlight}/>
-          <DateSelector startdate={selectorStartdate} 
+          <DateSelector startdate={startdate} 
                 onDateChange={handleSelectorDateChange} 
                 onFinalDateChange={handleSelectorFinalDateChange} 
                 onStepChange={setDateLabelHighlight}/>

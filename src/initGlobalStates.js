@@ -25,7 +25,9 @@ export  function initGlobalStates() {
         viewDate: new Date(),
         searchDate: new Date(),
         controllerDate: new Date(),
-        dateManagerDate: new Date()
+        dateManagerDate: new Date(),
+        incrementSpeed: 1,
+        increment: false
     })
     
 }

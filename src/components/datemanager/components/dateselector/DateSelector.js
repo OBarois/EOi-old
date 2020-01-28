@@ -7,7 +7,7 @@ import DateSelectorScale from './DateSelectorScale'
 import './DateSelector.css';
 // import { start } from 'repl';
 
-function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}) {
+function DateSelector({startdate, increment, incrementSpeed, onDateChange, onFinalDateChange, onStepChange}) {  /// add increment: true\false and incrementStep. controller will set this props
 
     const MAXZOOM = 1000*60*60*24*15
     const MINZOOM = 1000
@@ -49,7 +49,7 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
 
     const [{ posxy_drag}, setyOnDrag] = useSpring(() => ({ posxy_drag: [0,0]  }))
-    const [{ xy2 }, sety2] = useSpring(() => ({ xy2: [0,0] }))
+    const [{ xy2 }, sety2, stop2] = useSpring(() => ({ xy2: [0,0] }))
     const [{ posxy_wheel }, setyOnWheel, stop] = useSpring(() => ({posxy_wheel: [0,0] }))
     // const [{ zoom }, setz] = useSpring(() => ({ zoom: DEFZOOM }))
 
@@ -189,12 +189,12 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
 
     const moveToDate = (startdate) => {
-        console.log("moving to: "+ startdate.toJSON())
+
         if (!active) {
             let deltaoffset = [0,(lastStartdate.getTime() - startdate.getTime())  / zoomfactor]
-            console.log("deltaoffset: "+ deltaoffset)
-            setActive(true)
-            
+
+            // setActive(true)
+            stop2()
             sety2({ 
                 xy2: deltaoffset,
                 immediate: false, 
@@ -211,10 +211,10 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
                     onDateChange(newdate)
                     setlLastStartdate(newdate)
                     onFinalDateChange(newdate)
-                    setActive(false)
+                    // setActive(false)
                 }
             })
-        } else console.log("rejecting move")
+        } 
 
     }
 
@@ -225,9 +225,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
         }
     },[startdate])
 
-    useEffect(() => {
-        console.log('laststartdate changed: '+lastStartdate.toJSON())
-    },[lastStartdate])
+    // useEffect(() => {
+    //     console.log('laststartdate changed: '+lastStartdate.toJSON())
+    // },[lastStartdate])
 
     useEffect(() => {
         console.log('Selector active: '+active)

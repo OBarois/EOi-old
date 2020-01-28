@@ -40,10 +40,10 @@ function DateController({ initdate, onDateChange}) {
         }
     },[date, playing]);
 
-    useEffect(() => {
-        console.log("initdate changed: "+initdate.toJSON())
-        forceDate(initdate)
-    },[initdate]);
+    // useEffect(() => {
+    //     console.log("initdate changed: "+initdate.toJSON())
+    //     forceDate(initdate)
+    // },[initdate]);
 
     const lastTap = useRef()
     const handleClick = () => {
@@ -52,7 +52,7 @@ function DateController({ initdate, onDateChange}) {
           reset();
         } else {
             lastTap.current = now
-            togglePause()
+            // togglePause()
         }
       }
 

@@ -108,7 +108,7 @@ export function useClock({ autoStart, initdate }) {
             start();
         }
         //return reset;
-    }, [autoStart]);
+    }, []);
 
   
   return { date, playing, togglePause, reset, increaseSpeed, decreaseSpeed, forceDate };

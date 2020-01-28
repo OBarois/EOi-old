@@ -8,11 +8,13 @@ function CDateManager() {
     const [viewDate, setViewDate] = useGlobal('viewDate')
     const [searchDate, setSearchDate] = useGlobal('searchDate')
     const [searching, setSearching] = useGlobal('searching')
+    const [increment, ] = useGlobal('increment')
+    const [incrementSpeed, ] = useGlobal('incrementSpeed')
     const [dateManagerDate, setDdateManagerDate] = useGlobal('dateManagerDate')
 
 
     return (
-        <DateManager startdate={dateManagerDate} onDateChange={setViewDate} onFinalDateChange={setSearchDate} animated={searching}/>
+        <DateManager startdate={dateManagerDate} increment={increment} incrementSpeed={incrementSpeed} onDateChange={setViewDate} onFinalDateChange={setSearchDate} animated={searching}/>
      )
 }
 

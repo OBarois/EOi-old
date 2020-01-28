@@ -10,7 +10,7 @@ function CDateController() {
     const [searchDate, setSearchDate] = useGlobal('searchDate')
     const [searching, setSearching] = useGlobal('searching')
 
-    const [dateControllerDate, setDateControllerDate] = useState(dateManagerDate)
+    const [dateControllerDate, setDateControllerDate] = useState(searchDate)
 
     useEffect(() => {
         console.log("initdate changed: "+searchDate.toJSON())
@@ -19,7 +19,7 @@ function CDateController() {
 
     const handleControllerDateChange = (date) => {
         setDateManagerDate(date)
-        setDateControllerDate(date)
+        // setDateControllerDate(date)
     }
 
 

@@ -109,6 +109,7 @@ export function useDateIncrementor({ autoStart, initdate }) {
     function forceDate(newdate) {
         console.log('forcedate useclock: '+newdate.toJSON())
         ldate.current = newdate.getTime()
+        setDate(new Date(ldate.current))
     }
 
     useEffect(() => {
