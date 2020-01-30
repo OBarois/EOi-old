@@ -72,8 +72,7 @@ function DateSelector({startdate, increment, incrementSpeed, onDateChange, onFin
             }
             let zoom
             if ( shiftKey) {
-                console.log('in double tap whhel '+ direction[1])
-                zoom = zoomfactor + zoomfactor / 50 * direction[1]
+                zoom = zoomfactor - zoomfactor / 5 * direction[0]
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
@@ -137,7 +136,7 @@ function DateSelector({startdate, increment, incrementSpeed, onDateChange, onFin
 
             if (doubleTap.current || shiftKey) {
 
-                zoom = zoomfactor + zoomfactor / 50 * ( delta[1] )
+                zoom = zoomfactor - zoomfactor / 50 * ( delta[1] )
                 if (zoom < MINZOOM) zoom = MINZOOM
                 if (zoom > MAXZOOM) zoom = MAXZOOM
                 setZoomfactor(zoom)
