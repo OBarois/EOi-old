@@ -599,7 +599,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_01deg.jpg');
         // let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_3km.jpg');
         
-        //atmosphereLayer.minActiveAltitude = 5000000
+        atmosphereLayer.minActiveAltitude = 3000000
 
         let quicklookLayer = new WorldWind.RenderableLayer('Quicklooks')
     
