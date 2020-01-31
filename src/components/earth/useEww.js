@@ -41,9 +41,13 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     
   
     const eww = useRef(null)
+    const FirstPersonCamera = useRef(null)
+    const ArcBallCamera = useRef(null)
+    
     const [projection, setProjection] = useState("3D")
     // const [aoi, setAoi] = useState({type: null, value: null})
     const [aoi, setAoi] = useState('')
+    const [atmo, setAtmo] = useState(atmosphere)
     const [geojsonlayers, setGeojsonlayers] = useState([])
     const [quicklooklayers, setQuicklooklayers] = useState([])
     const [ewwstate, setEwwState] = useState({latitude: clat, longitude: clon, altitude: alt, aoi:'', pickedItems: []})
@@ -84,8 +88,11 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     function setAtmosphere(bool) {
         console.log('toggleAtmosphere')
         getLayerByName('Atmosphere').enabled = bool
+        setAtmo(bool)
         eww.current.redraw();
     }
+
+
     //toggle model
     function toggleModel() {
         console.log('toggleModel')
@@ -510,6 +517,29 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     //     setEwwState(newewwstate)
     // }, [aoi]); 
 
+    useEffect(() => {
+        if(eww.current) {
+            console.log("alt: "+ewwstate.altitude)
+            if(ewwstate.altitude > 2001) {
+                eww.current.navigator.camera = ArcBallCamera.current
+                // setAtmo((ewwstate.altitude > 3000000)?atmo:false)  
+                getLayerByName('Atmosphere').enabled = (ewwstate.altitude > 3000000)?atmo:false
+            } else {
+                eww.current.navigator.camera = FirstPersonCamera.current;
+                getLayerByName('Atmosphere').enabled = atmo
+            }
+    
+        }
+    }, [ewwstate.altitude]); 
+
+    // useEffect(() => {
+    //     if(eww.current) {
+    //         getLayerByName('Atmosphere').enabled = atmo
+    //         eww.current.redraw()
+    //     }
+    // }, [atmo]); 
+
+
     // didMount effect
     useEffect(() => {
         console.log("Creating the world...")
@@ -529,6 +559,12 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
         eww.current = new WorldWind.WorldWindow(id);
         eww.current.redrawCallbacks.push(setGlobeStates)
+
+        // experiment first person camera
+
+        ArcBallCamera.current = new WorldWind.ArcBallCamera(eww.current)
+        FirstPersonCamera.current = new WorldWind.FirstPersonCamera(eww.current)
+        eww.current.navigator = new WorldWind.Navigator(ArcBallCamera.current)
 
         // Define a min/max altitude limit
         WorldWind.BasicWorldWindowController.prototype.applyLimits = function () {
@@ -599,7 +635,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_01deg.jpg');
         // let atmosphereLayer = new WorldWind.AtmosphereLayer('images/BlackMarble_2016_3km.jpg');
         
-        atmosphereLayer.minActiveAltitude = 3000000
+        // atmosphereLayer.minActiveAltitude = 3000000
 
         let quicklookLayer = new WorldWind.RenderableLayer('Quicklooks')
     
@@ -608,7 +644,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
             { layer: new WorldWind.WmsLayer(wmsConfigBg_terrain, ""), enabled: false },
             { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
             { layer: starFieldLayer, enabled: starfield },
-            { layer: atmosphereLayer, enabled: atmosphere },
+            { layer: atmosphereLayer, enabled: atmo },
             { layer: quicklookLayer, enabled: true },
             { layer: modelsLayer, enabled: false }
         ];
