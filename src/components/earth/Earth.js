@@ -8,7 +8,8 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 
 
-function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) {
+const Earth = ({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) =>  {
+console.log("render Earth")
 
     const {
         ewwstate,

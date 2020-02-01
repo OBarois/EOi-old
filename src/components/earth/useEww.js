@@ -1,4 +1,4 @@
-import  { useState, useEffect, useRef } from "react";
+import  React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import WorldWind from "webworldwind-esa";
 import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
@@ -36,8 +36,8 @@ import modelsLayer from './satelliteLayer';
 //     }
 // };
 
-export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
-    //console.log('useEww renders')
+export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) => {
+    // console.log('useEww renders')
     
   
     const eww = useRef(null)
@@ -46,8 +46,12 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     const [aoi, setAoi] = useState('')
     const [geojsonlayers, setGeojsonlayers] = useState([])
     const [quicklooklayers, setQuicklooklayers] = useState([])
-    const [ewwstate, setEwwState] = useState({latitude: clat, longitude: clon, altitude: alt, aoi:'', pickedItems: []})
-
+    // const [ewwstate, setEwwState] = useState({latitude: clat, longitude: clon, altitude: alt, aoi:'', pickedItems: []})
+    const [ewwstate, setEwwState] = useState()
+    const [wwd, setWwd] = useState()    
+    const fpcamera = useRef()
+    const abcamera = useRef()
+    const [cameraMode, setCameraMode] = useState()
 
     // Turn the globe up north
     function northUp() {
@@ -419,15 +423,63 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
           })      
       }
 
-    // callback from eww   
+      const setCamera = (mode) => {
+          console.log("mode changed to: "+mode) 
+
+          if( mode === 'firstperson' && eww.current.navigator.camera instanceof WorldWind.ArcBallCamera) {
+            fpcamera.current = eww.current.navigator.camera.toFirstPerson(fpcamera.current)
+            eww.current.navigator.camera = fpcamera.current
+            eww.current.navigator.camera.tilt = 0
+          } else 
+          if ( mode === 'arcball' && eww.current.navigator.camera instanceof WorldWind.FirstPersonCamera) {
+            abcamera.current = eww.current.navigator.camera.toArcBall(abcamera.current)
+            eww.current.navigator.camera = abcamera.current
+            eww.current.navigator.camera.tilt = 0
+            // WorldWind.BasicWorldWindowController.prototype.applyLimits = WorldWind.ArcBallCamera.prototype.applyLimits
+            // eww.current.navigator.camera.range = 2000
+          }
+      }
+
+    // Switch camera type 
+    const switchCamera = (type) => {
+        // let camera = eww.current.navigator.camera
+        if ((eww.current.navigator.camera instanceof WorldWind.ArcBallCamera) && type === "firstPerson") {
+            console.log("camreara range before tofirstperson"+fpcamera.current.range)
+            fpcamera.current = eww.current.navigator.camera.toFirstPerson(fpcamera.current)
+            console.log("camreara range after tofirstperson"+fpcamera.current.range)
+            eww.current.navigator.camera = fpcamera.current
+            // let newcamera = new WorldWind.FirstPersonCamera(eww.current)
+            // eww.current.navigator.camera = eww.current.navigator.camera.toFirstPerson(newcamera)
+            // eww.current.navigator.camera = eww.current.navigator.camera.toFirstPerson(eww.current.navigator.camera)
+            // eww.current.navigator.camera.tilt = 0
+            return
+        }
+
+        if ((eww.current.navigator.camera instanceof WorldWind.FirstPersonCamera) && type === "arcBall") {
+            abcamera.current = eww.current.navigator.camera.toArcBall(abcamera.current)
+            eww.current.navigator.camera = abcamera.current
+            return
+        }
+    }
+
+    
+
+    // callback from eww after frame rendering
     const setGlobeStates = () => {
         
         let lo = eww.current.navigator.lookAtLocation.longitude
         let la = eww.current.navigator.lookAtLocation.latitude
         let al = eww.current.navigator.range
-        let vp = (al < 2000000?getViewPolygon():'')
+        
+        // let vp = (al < 2000000?getViewPolygon():'')
 
-        setEwwState((ewwstate) => { return {...ewwstate, longitude:lo, latitude: la, altitude: al, viewpolygon: vp}}) 
+        // switchCamera((al <= 2000)?"firstPerson":"arcBall")
+
+        setCameraMode((al <= 2000)?"firstperson":"arcball")
+
+
+        
+        // setEwwState((ewwstate) => { return {...ewwstate, longitude:lo, latitude: la, altitude: al, viewpolygon: vp}}) 
 
     }
 
@@ -510,30 +562,40 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     //     setEwwState(newewwstate)
     // }, [aoi]); 
 
+    
+    
     // didMount effect
-    useEffect(() => {
+    useLayoutEffect(() => {
         console.log("Creating the world...")
 
         // to use DEM from Eox ESA Map server
         var elevationModel = new WorldWind.ElevationModel();
-        elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
-            coverageSector: WorldWind.Sector.FULL_SPHERE,
-            resolution: 0.008333333333333,
-            retrievalImageFormat: "image/tiff",
-            minElevation: -11000,
-            maxElevation: 8850,
-            urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "1.3.0")
-            }));
-        // eww.current = new WorldWind.WorldWindow(id, elevationModel);
+        // elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+        //     coverageSector: WorldWind.Sector.FULL_SPHERE,
+        //     resolution: 0.008333333333333,
+        //     retrievalImageFormat: "image/tiff",
+        //     minElevation: -11000,
+        //     maxElevation: 8850,
+        //     urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "1.3.0")
+        //     }));
+        eww.current = new WorldWind.WorldWindow(id, elevationModel);
+        // setWwd(eww.current)
+
+        // stores the 2 cameras as ref
+        abcamera.current =  eww.current.navigator.camera.clone()
+        fpcamera.current = new WorldWind.Navigator(new WorldWind.FirstPersonCamera(eww.current))
+        fpcamera.current = eww.current.navigator.getAsFirstPersonCamera()
+        // eww.current.navigator.camera = fpcamera.current 
+        
 
 
-        eww.current = new WorldWind.WorldWindow(id);
+        // eww.current = new WorldWind.WorldWindow(id);
         eww.current.redrawCallbacks.push(setGlobeStates)
 
         // Define a min/max altitude limit
-        WorldWind.BasicWorldWindowController.prototype.applyLimits = function () {
-            eww.current.navigator.range = WorldWind.WWMath.clamp(eww.current.navigator.range, 2000, 300000000);
-        }
+        // WorldWind.BasicWorldWindowController.prototype.applyLimits = function () {
+        //     eww.current.navigator.range = WorldWind.WWMath.clamp(eww.current.navigator.range, 1000, 100000000);
+        // }
 
         // define click/tap recognisers
         // let tapRecognizer = new WorldWind.TapRecognizer(eww.current, handleClick);
@@ -630,7 +692,12 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         eww.current.deepPicking = true;
         // eww.current.orderedRenderingFilters.push(declutterByTime)
     }, []); // effect runs only once
-        
+    
+    useEffect(() => {
+        console.log("running effect cameramode")
+        if(cameraMode) setCamera(cameraMode)
+    }, [cameraMode]); 
+
   
-  return { ewwstate, removeGeojson, addGeojson, addWMS, setStarfield, setAtmosphere, setTime, toggleProjection, setNames, toggleModel, toggleBg, northUp };
+  return { removeGeojson, addGeojson, addWMS, setStarfield, setAtmosphere, setTime, toggleProjection, setNames, toggleModel, toggleBg, northUp };
 }
