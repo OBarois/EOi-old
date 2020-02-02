@@ -86,7 +86,7 @@ function DateSelector({startdate, increment, incrementSpeed, onDateChange, onFin
                 // posxy_wheel: scale(movement,0.1), // must be cummulative
                 posxy_wheel:movement,
                 // immediate: (Math.abs(movement[1])<500), 
-                immediate: false,
+                immediate: true,
                 // config: { },
                 // reset: true,
                 onFrame: ()=>{

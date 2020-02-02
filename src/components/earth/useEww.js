@@ -37,7 +37,7 @@ import modelsLayer from './satelliteLayer';
 // };
 
 export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) => {
-    // console.log('useEww renders')
+    console.log('useEww renders')
     
   
     const eww = useRef(null)
@@ -434,40 +434,30 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
           console.log("mode changed to: "+mode) 
 
           if( mode === 'firstperson' && eww.current.navigator.camera instanceof WorldWind.ArcBallCamera) {
+            console.log("before fp")
+            console.log(eww.current.navigator.camera)
             fpcamera.current = eww.current.navigator.camera.toFirstPerson(fpcamera.current)
             eww.current.navigator.camera = fpcamera.current
             eww.current.navigator.camera.tilt = 0
+            console.log("after fp")
+            console.log(eww.current.navigator.camera)
           } else 
           if ( mode === 'arcball' && eww.current.navigator.camera instanceof WorldWind.FirstPersonCamera) {
+            console.log("before ab")
+            console.log(eww.current.navigator.camera)
+
             abcamera.current = eww.current.navigator.camera.toArcBall(abcamera.current)
-            eww.current.navigator.camera = abcamera.current
-            eww.current.navigator.camera.tilt = 0
+            // eww.current.navigator.camera = abcamera.current
+            eww.current.navigator.camera = eww.current.navigator.getAsArcBallCamera()
+            // eww.current.navigator.camera.tilt = 0
+            // eww.current.navigator.camera.heading = 0
+
+            console.log("after ab")
+            console.log(eww.current.navigator.camera)
             // WorldWind.BasicWorldWindowController.prototype.applyLimits = WorldWind.ArcBallCamera.prototype.applyLimits
             // eww.current.navigator.camera.range = 2000
           }
       }
-
-    // Switch camera type 
-    const switchCamera = (type) => {
-        // let camera = eww.current.navigator.camera
-        if ((eww.current.navigator.camera instanceof WorldWind.ArcBallCamera) && type === "firstPerson") {
-            console.log("camreara range before tofirstperson"+fpcamera.current.range)
-            fpcamera.current = eww.current.navigator.camera.toFirstPerson(fpcamera.current)
-            console.log("camreara range after tofirstperson"+fpcamera.current.range)
-            eww.current.navigator.camera = fpcamera.current
-            // let newcamera = new WorldWind.FirstPersonCamera(eww.current)
-            // eww.current.navigator.camera = eww.current.navigator.camera.toFirstPerson(newcamera)
-            // eww.current.navigator.camera = eww.current.navigator.camera.toFirstPerson(eww.current.navigator.camera)
-            // eww.current.navigator.camera.tilt = 0
-            return
-        }
-
-        if ((eww.current.navigator.camera instanceof WorldWind.FirstPersonCamera) && type === "arcBall") {
-            abcamera.current = eww.current.navigator.camera.toArcBall(abcamera.current)
-            eww.current.navigator.camera = abcamera.current
-            return
-        }
-    }
 
     
 
