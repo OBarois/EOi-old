@@ -55,6 +55,7 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
     const [wwd, setWwd] = useState()    
     const fpcamera = useRef()
     const abcamera = useRef()
+    const lastAbTilt = useRef()
     const [cameraMode, setCameraMode] = useState()
 
     // Turn the globe up north
@@ -430,32 +431,28 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
           })      
       }
 
+
       const setCamera = (mode) => {
-          console.log("mode changed to: "+mode) 
+        const copyParamCamera = (fromcamera, tocamera) => {
+            tocamera.position.latitude = fromcamera.position.latitude;
+            tocamera.position.longitude = fromcamera.position.longitude;
+            tocamera.heading = fromcamera.heading;
+            tocamera.tilt = fromcamera.tilt;
+            tocamera.roll = fromcamera.roll;
+            tocamera.range = fromcamera.range;
+          }
+    
 
           if( mode === 'firstperson' && eww.current.navigator.camera instanceof WorldWind.ArcBallCamera) {
-            console.log("before fp")
-            console.log(eww.current.navigator.camera)
-            fpcamera.current = eww.current.navigator.camera.toFirstPerson(fpcamera.current)
+            lastAbTilt.current = eww.current.navigator.camera.tilt
+            copyParamCamera(eww.current.navigator.camera, fpcamera.current)
             eww.current.navigator.camera = fpcamera.current
             eww.current.navigator.camera.tilt = 0
-            console.log("after fp")
-            console.log(eww.current.navigator.camera)
           } else 
           if ( mode === 'arcball' && eww.current.navigator.camera instanceof WorldWind.FirstPersonCamera) {
-            console.log("before ab")
-            console.log(eww.current.navigator.camera)
-
-            abcamera.current = eww.current.navigator.camera.toArcBall(abcamera.current)
-            // eww.current.navigator.camera = abcamera.current
-            eww.current.navigator.camera = eww.current.navigator.getAsArcBallCamera()
-            // eww.current.navigator.camera.tilt = 0
-            // eww.current.navigator.camera.heading = 0
-
-            console.log("after ab")
-            console.log(eww.current.navigator.camera)
-            // WorldWind.BasicWorldWindowController.prototype.applyLimits = WorldWind.ArcBallCamera.prototype.applyLimits
-            // eww.current.navigator.camera.range = 2000
+            copyParamCamera(eww.current.navigator.camera, abcamera.current)
+            abcamera.current.tilt = lastAbTilt.current
+            eww.current.navigator.camera = abcamera.current
           }
       }
 
@@ -472,7 +469,7 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
 
         // switchCamera((al <= 2000)?"firstPerson":"arcBall")
 
-        setCameraMode((al <= 2000)?"firstperson":"arcball")
+        setCameraMode((al <= 1000)?"firstperson":"arcball")
 
 
         
@@ -578,10 +575,11 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
         eww.current = new WorldWind.WorldWindow(id, elevationModel);
         // setWwd(eww.current)
 
-        // stores the 2 cameras as ref
-        abcamera.current =  eww.current.navigator.camera.clone()
-        // fpcamera.current = new WorldWind.Navigator(new WorldWind.FirstPersonCamera(eww.current))
-        fpcamera.current = eww.current.navigator.getAsFirstPersonCamera()
+        // Create 2 cameras as ref for later switching
+        // abcamera.current =  eww.current.navigator.camera.clone()
+        fpcamera.current = new WorldWind.FirstPersonCamera(eww.current)
+        abcamera.current = new WorldWind.ArcBallCamera(eww.current)
+        // fpcamera.current = eww.current.navigator.getAsFirstPersonCamera()
         // eww.current.navigator.camera = fpcamera.current 
         
 
