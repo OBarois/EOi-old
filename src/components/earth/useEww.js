@@ -564,14 +564,14 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
 
         // to use DEM from Eox ESA Map server
         var elevationModel = new WorldWind.ElevationModel();
-        // elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
-        //     coverageSector: WorldWind.Sector.FULL_SPHERE,
-        //     resolution: 0.008333333333333,
-        //     retrievalImageFormat: "image/tiff",
-        //     minElevation: -11000,
-        //     maxElevation: 8850,
-        //     urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "1.3.0")
-        //     }));
+        elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+            coverageSector: WorldWind.Sector.FULL_SPHERE,
+            resolution: 0.008333333333333,
+            retrievalImageFormat: "image/x-aaigrid",
+            minElevation: 0,
+            maxElevation: 8850,
+            urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
+            }));
         eww.current = new WorldWind.WorldWindow(id, elevationModel);
         // setWwd(eww.current)
 
@@ -618,7 +618,7 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
 
         //setWwd(eww);
         let wmsConfigBg_s2 = {
-            service: "https://tiles.maps.eox.at/wms",
+            service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "s2cloudless-2018",
             title: "s2cloudless-2018",
             numLevels: 19,
@@ -628,7 +628,7 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
             levelZeroDelta: new WorldWind.Location(90, 90)
         }
         let wmsConfigBg_terrain = {
-            service: "https://tiles.maps.eox.at/wms",
+            service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "terrain",
             title: "terrain",
             numLevels: 19,
@@ -639,7 +639,7 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
         }
     
         let wmsConfigNames = {
-            service: "https://tiles.maps.eox.at/wms",
+            service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "overlay_bright",
             title: "overlay_bright",
             numLevels: 19,

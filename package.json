@@ -17,7 +17,7 @@
     "react-use-gesture": "^7.0.0-beta.11",
     "reactn": "^2.2.4",
     "vec-la": "^1.5.0",
-    "webworldwind-esa": "github:OBarois/WebWorldWind-ESA#ImprovedNav"
+    "webworldwind-esa": "1.0.1"
   },
   "devDependencies": {
     "gh-pages": "^2.2.0",
