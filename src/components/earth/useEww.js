@@ -566,12 +566,15 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
         var elevationModel = new WorldWind.ElevationModel();
         elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
             coverageSector: WorldWind.Sector.FULL_SPHERE,
-            resolution: 0.008333333333333,
+            resolution: 0.0008093894441, // copdem is 90m resolution
+            // retrievalImageFormat: "image/tiff",
             retrievalImageFormat: "image/x-aaigrid",
             minElevation: 0,
             maxElevation: 8850,
             urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
-            }));
+        }));
+        // console.log("added elevation model")
+        // console.log(elevationModel.coverages)
         eww.current = new WorldWind.WorldWindow(id, elevationModel);
         // setWwd(eww.current)
 
