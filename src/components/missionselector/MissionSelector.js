@@ -6,10 +6,10 @@ import './MissionSelector.css'
 
 // should use a prop
 
-function MissionSelector({onMissionChange}) {
+function MissionSelector({initialmission, onMissionChange}) {
 
 
-    const [mission, setMission] = useState('S1')
+    const [mission, setMission] = useState(initialmission)
     
     useHotkeys("1",()=>{setMission('S1')}) 
     useHotkeys("2",()=>{setMission('S2')}) 
@@ -20,7 +20,7 @@ function MissionSelector({onMissionChange}) {
     useEffect(() => {
         console.log('Mission changed to: '+ mission)
         onMissionChange(mission)
-    }, [mission]);
+    }, [mission, onMissionChange]);
     
     
     //console.log('mission rendering')

@@ -1,11 +1,16 @@
 import React, {useState, useEffect, useRef} from 'react';
+import { useGlobal } from 'reactn';
+
 import './App.css'
 import Earth from '../earth'
-import DateManager from '../datemanager'
+// import DateManager from '../datemanager'
 import { useHotkeys } from 'react-hotkeys-hook'
 import ControlPanel from "../controlpanel";
-import MissionSelector from "../missionselector";
-import MapSelector from "../mapselector";
+import CDateManager from "../../containers/DateManagerContainer";
+import CDateController from "../../containers/DateControllerContainer";
+
+import CMissionSelector from "../../containers/MissionSelectorContainer";
+import CMapSelector from "../../containers/MapSelectorContainer";
 
 // import useToggle from 'react-use/lib/useToggle'
 import Fullscreen from "react-full-screen"
@@ -14,45 +19,24 @@ import { useFullscreen } from '@straw-hat/react-fullscreen'
 
 function App() {
     
-    let initdate = new Date()
-    const [viewdate, setViewdate] = useState(initdate)
-    const [startdate, ] = useState(initdate)
-    const [searching, ] = useState(false)
-    const [collection, setCollection] = useState('S1')
-    const [starfield, setStarfield] = useState(false)
-    const [atmosphere, setAtmosphere] = useState(false)
-    const [names, setNames] = useState(false)
 
-    const changeDate = (newdate) => {
-        // console.log('App changeDate callback: ' + newdate.toJSON())
-        setViewdate(newdate)
-    }
+    const [ mission,  ] = useGlobal('mission');
+    const [ mapSettings, ] = useGlobal('mapSettings')
+    const [ viewDate,  ] = useGlobal('viewDate');
+    const [ searchDate,  ] = useGlobal('searchDate');
+  
 
 
-    const changeCollection = (mission) => {
-        console.log('new collection: ' + mission)
-        setCollection(mission)
-    }
+    // useEffect(() => {
+    //     console.log('View Date: '+viewDate.toJSON())
+    //     // setselectorStartdate(startdate)
+    // },[viewDate])
 
-    const toggleStarfield = () => {
-        console.log('Starfield')
-        setStarfield(!starfield)
-    }
-
-    const toggleAtmosphere = () => {
-        console.log('atmosphere')
-        setAtmosphere(!atmosphere)
-    }
-
-    const toggleNames = () => {
-        console.log('atmosphere')
-        setNames(!names)
-    }
 
       
     useEffect(() => {
-        // console.log('startdate changed to: '+startdate.toJSON())
-    },[startdate])
+        console.log('Search Date: '+searchDate.toJSON())
+    },[searchDate])
     
     const [isFull,setIsfull] = useState(false)
     const { isFullscreen, toggleFullscreen } = useFullscreen(window.document.body);
@@ -63,14 +47,16 @@ function App() {
         <div className="App" >
             <Fullscreen enabled={isFull} onChange={() =>  {if(!isFullscreen) setIsfull(false)} }>
                 <div className="Earth">
-                    <Earth viewdate={viewdate} id="globe" starfield={starfield} atmosphere={atmosphere} names={names}  clon='0.5' clat='40' />
+                    <Earth viewdate={viewDate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names}  clon='0.5' clat='40' />
                 </div>
-                <DateManager startdate={startdate}  searching={searching} onDateChange={changeDate} />
+                {/* <DateManager startdate={startdate} onDateChange={changeDate} onFinalDateChange={finalChangeDate} animated={searching}/> */}
+                <CDateManager/>
+                <CDateController/>
                 <ControlPanel active="true">
-                <MissionSelector  onMissionChange={changeCollection}></MissionSelector>
-                <MapSelector  toggleStarfield={toggleStarfield} toggleNames={toggleNames} toggleAtmosphere={toggleAtmosphere}></MapSelector>
+                <CMissionSelector></CMissionSelector>
+                <CMapSelector ></CMapSelector>
                 </ControlPanel>
-                <div className='MissionLabel'>{collection}</div>
+                <div className='MissionLabel'>{mission}</div>
             </Fullscreen>
         </div>
     )

@@ -7,6 +7,7 @@ import './DateController.css';
 
 function DateController({startdate, onDateChange}) {
 
+    // useClock must be redone to support real time increments
     const {
         date,
         // playing,
@@ -31,7 +32,7 @@ function DateController({startdate, onDateChange}) {
 
 
     useEffect(() => {
-        // console.log("date from useClock: "+new Date(date).toJSON())
+        console.log("date from useClock: "+new Date(date).toJSON())
         onDateChange(date)
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})
@@ -47,7 +48,7 @@ function DateController({startdate, onDateChange}) {
     const [lastTap, setLasttap] = useState()
     const handleDoubleTap = () => {
         const now = Date.now();
-        if (lastTap && (now - lastTap) < 300) {
+        if (lastTap && (now - lastTap) < 400) {
           reset();
         } else {
             setLasttap(now)

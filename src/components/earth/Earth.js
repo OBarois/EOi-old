@@ -8,7 +8,8 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 
 
-function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) {
+const Earth = ({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) =>  {
+console.log("render Earth")
 
     const {
         ewwstate,
@@ -16,9 +17,9 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
         removeGeojson,
         addWMS,
         toggleProjection,
-        toggleAtmosphere,
-        toggleStarfield,
-        toggleNames,
+        setAtmosphere,
+        setStarfield,
+        setNames,
         toggleBg,
         toggleModel,
         setTime,
@@ -34,9 +35,6 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     })
 
     useHotkeys("p",toggleProjection)  
-    useHotkeys("a",toggleAtmosphere)  
-    useHotkeys("s",toggleStarfield)  
-    useHotkeys("n",toggleNames)  
     useHotkeys("c",removeGeojson)
     useHotkeys("u",northUp)
     useHotkeys("b",toggleBg)
@@ -47,15 +45,15 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     },[viewdate, setTime])
 
     useEffect(() => {
-        toggleStarfield()
+        setStarfield(starfield)
     },[starfield])
 
     useEffect(() => {
-        toggleNames()
+        setNames(names)
     },[names])
 
     useEffect(() => {
-        toggleAtmosphere()
+        setAtmosphere(atmosphere)
     },[atmosphere])
 
 
