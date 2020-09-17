@@ -567,8 +567,8 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
         elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
             coverageSector: WorldWind.Sector.FULL_SPHERE,
             resolution: 0.0008093894441, // copdem is 90m resolution
-            // retrievalImageFormat: "image/tiff",
-            retrievalImageFormat: "image/x-aaigrid",
+            retrievalImageFormat: "image/tiff",
+            // retrievalImageFormat: "image/x-aaigrid",
             minElevation: 0,
             maxElevation: 8850,
             urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
@@ -621,9 +621,11 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
 
         //setWwd(eww);
         let wmsConfigBg_s2 = {
-            service: "https://tiles.esa.maps.eox.at/wms",
-            layerNames: "s2cloudless-2018",
-            title: "s2cloudless-2018",
+            service: "https://tiles.maps.eox.at/wms",
+            //service: "https://tiles.esa.maps.eox.at/wms",
+            layerNames: "s2cloudless-2019",
+            //layerNames: "s2cloudless-2018",
+            title: "s2cloudless-2019",
             numLevels: 19,
             format: "image/png",
             size: 256,
@@ -631,7 +633,8 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
             levelZeroDelta: new WorldWind.Location(90, 90)
         }
         let wmsConfigBg_terrain = {
-            service: "https://tiles.esa.maps.eox.at/wms",
+            service: "https://tiles.maps.eox.at/wms",
+            //service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "terrain",
             title: "terrain",
             numLevels: 19,
@@ -642,7 +645,8 @@ export const  useEww = ({ id, clon, clat, alt, starfield, atmosphere, names }) =
         }
     
         let wmsConfigNames = {
-            service: "https://tiles.esa.maps.eox.at/wms",
+            service: "https://tiles.maps.eox.at/wms",
+            //service: "https://tiles.esa.maps.eox.at/wms",
             layerNames: "overlay_bright",
             title: "overlay_bright",
             numLevels: 19,
