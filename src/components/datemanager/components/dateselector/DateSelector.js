@@ -230,8 +230,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
 
     return (
-        <animated.div {...bind()} className='DateSelector' ref={selector} >
+        <animated.div className='DateSelector' ref={selector} >
             <div className="Mask"  >
+                <div {...bind()} className="touchMask"> </div>
 
                 <DateSelectorScale className='scale' date={scaledate} zoomfactor={zoomfactor} step={step}></DateSelectorScale>
                 
