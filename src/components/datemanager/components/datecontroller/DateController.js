@@ -32,7 +32,7 @@ function DateController({startdate, onDateChange}) {
 
 
     useEffect(() => {
-        console.log("date from useClock: "+new Date(date).toJSON())
+        // console.log("date from useClock: "+new Date(date).toJSON())
         onDateChange(date)
         //forceDate(date)
         //setAppdate({appdate: new Date(date)})

@@ -3,6 +3,8 @@ import WorldWind from "webworldwind-esa";
 import StarFieldLayer from "./wwwx/layer/starfield/StarFieldLayer"
 import TexturedSurfacePolygon from './wwwx/shapes/TexturedSurfacePolygon'
 import modelsLayer from './satelliteLayer';
+import {bgLayers, ovLayers} from './layerConfig';
+
 
 // BasicWorldWindowController.prototype.applyLimits = function () {
 //     var navigator = this.wwd.navigator;
@@ -47,6 +49,10 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
     const [geojsonlayers, setGeojsonlayers] = useState([])
     const [quicklooklayers, setQuicklooklayers] = useState([])
     const [ewwstate, setEwwState] = useState({latitude: clat, longitude: clon, altitude: alt, aoi:'', pickedItems: []})
+    const [demOn,setDemOn] = useState(true)
+    const copDemOn = useRef(false)
+    const bgIndex = useRef(0)
+    const ovIndex = useRef(0)
 
 
     // Turn the globe up north
@@ -107,11 +113,76 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         eww.current.redraw();
     }
     //toggle background overlay
-    function toggleBg() {
+    function toggleBg2() {
         console.log('toggleTerrain')
         getLayerByName('terrain').enabled = !getLayerByName('terrain').enabled
         getLayerByName('s2cloudless-2018').enabled = !getLayerByName('s2cloudless-2018').enabled
         eww.current.redraw();
+    }
+    function toggleBg() {
+        eww.current.layers[bgIndex.current].enabled=false
+
+        bgIndex.current = (bgIndex.current + 1)%bgLayers.length
+        console.log("Background Layer: "+eww.current.layers[bgIndex.current].displayName)
+        eww.current.layers[bgIndex.current].enabled=true
+    }
+    function toggleOv() {
+        eww.current.layers[ovIndex.current+bgLayers.length].enabled=false
+
+        ovIndex.current = (ovIndex.current + 1)%ovLayers.length
+        console.log("Overlay Layer: "+eww.current.layers[ovIndex.current+bgLayers.length].displayName)
+        eww.current.layers[ovIndex.current+bgLayers.length].enabled=true
+    }
+    
+    //toggle DEM 
+    function toggleDem() {
+        // var elevationModel
+        // console.log("Dem state in toggle: "+((demOn)<=!demOn))
+        // if(!copDemOn.current) {
+        //     console.log('Switching to Copernicus Dem')
+        //     elevationModel = new WorldWind.ElevationModel();
+        //     elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+        //         coverageSector: WorldWind.Sector.FULL_SPHERE,
+        //         resolution: 0.008333333333333,
+        //         retrievalImageFormat: "image/tiff",
+        //         minElevation: -11000,
+        //         maxElevation: 8850,
+        //         urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
+        //         }));    
+            
+        // } else {
+        //     console.log('Switching to NASA Dem')
+        //     elevationModel = new WorldWind.EarthElevationModel()
+        // }
+        // eww.current.globe.elevationModel = elevationModel
+        // eww.current.redraw();
+        copDemOn.current = !copDemOn.current
+        setDemOn(copDemOn.current)
+    }
+
+    function toggleDem2() {
+        var elevationModel
+        console.log("Dem state: "+demOn)
+        if(!copDemOn.current) {
+            console.log('Switching to Copernicus Dem')
+            elevationModel = new WorldWind.ElevationModel();
+            elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+                coverageSector: WorldWind.Sector.FULL_SPHERE,
+                resolution: 0.008333333333333,
+                retrievalImageFormat: "image/tiff",
+                minElevation: -11000,
+                maxElevation: 8850,
+                urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
+                }));    
+            
+        } else {
+            console.log('Switching to NASA Dem')
+            elevationModel = new WorldWind.EarthElevationModel()
+        }
+        eww.current.globe.elevationModel = elevationModel
+        eww.current.redraw();
+        copDemOn.current = !copDemOn.current
+        setDemOn(!demOn)
     }
 
     function  getViewPolygon () {
@@ -440,7 +511,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         // Perform the pick. Must first convert from window coordinates to canvas coordinates, which are
         // relative to the upper left corner of the canvas rather than the upper left corner of the page.
         let pickList = eww.current.pick(eww.current.canvasCoordinates(x, y));
-        console.log(pickList)
+        // console.log(pickList)
         if (pickList.terrainObject()) {
             // position = pickList.terrainObject().position;
             // store list of selected footprints in a string for later comparison
@@ -465,7 +536,7 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
                     addQuicklookWMS(pickList.objects[i].userObject)
                 }
             }
-            console.log(pickedItems)
+            // console.log(pickedItems)
             setEwwState((ewwstate) => { return {...ewwstate, pickedItems: pickedItems}})
             eww.current.redraw()
         } else {
@@ -504,11 +575,6 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
        
     }
 
-    // useEffect(() => {
-    //     console.log("useEffect aoi: " + aoi)
-    //     let newewwstate = {...ewwstate, aoi: aoi}
-    //     setEwwState(newewwstate)
-    // }, [aoi]); 
 
     // didMount effect
     useEffect(() => {
@@ -516,13 +582,14 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
 
         // to use DEM from Eox ESA Map server
         var elevationModel = new WorldWind.ElevationModel();
+        elevationModel.removeAllCoverages()
         elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
             coverageSector: WorldWind.Sector.FULL_SPHERE,
             resolution: 0.008333333333333,
             retrievalImageFormat: "image/tiff",
             minElevation: -11000,
             maxElevation: 8850,
-            urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "1.3.0")
+            urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
             }));
         // eww.current = new WorldWind.WorldWindow(id, elevationModel);
 
@@ -542,54 +609,23 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         // doubleTapRecognizer.numberOfTaps = 2;
         // doubleTapRecognizer.recognizeSimultaneouslyWith(tapRecognizer);
 
-        let clickRecognizer = new WorldWind.ClickRecognizer(eww.current, handleClick);
-        clickRecognizer.numberOfClicks = 1;
-        let doubleClickRecognizer = new WorldWind.ClickRecognizer(eww.current, handleDoubleClick);
-        doubleClickRecognizer.numberOfClicks = 2;
-        doubleClickRecognizer.recognizeSimultaneouslyWith(clickRecognizer);
-        doubleClickRecognizer.maxClickInterval = 200;
+        // let clickRecognizer = new WorldWind.ClickRecognizer(eww.current, handleClick);
+        // clickRecognizer.numberOfClicks = 1;
+        // let doubleClickRecognizer = new WorldWind.ClickRecognizer(eww.current, handleDoubleClick);
+        // doubleClickRecognizer.numberOfClicks = 2;
+        // doubleClickRecognizer.recognizeSimultaneouslyWith(clickRecognizer);
+        // doubleClickRecognizer.maxClickInterval = 200;
 
-        let tapRecognizer = new WorldWind.TapRecognizer(eww.current, handleClick);
-        tapRecognizer.numberOfTaps = 1;
-        let doubleTapRecognizer = new WorldWind.TapRecognizer(eww.current, handleDoubleClick);
-        doubleTapRecognizer.numberOfTaps = 2;
-        doubleTapRecognizer.recognizeSimultaneouslyWith(tapRecognizer);
-        doubleTapRecognizer.maxTapInterval = 200;
+        // let tapRecognizer = new WorldWind.TapRecognizer(eww.current, handleClick);
+        // tapRecognizer.numberOfTaps = 1;
+        // let doubleTapRecognizer = new WorldWind.TapRecognizer(eww.current, handleDoubleClick);
+        // doubleTapRecognizer.numberOfTaps = 2;
+        // doubleTapRecognizer.recognizeSimultaneouslyWith(tapRecognizer);
+        // doubleTapRecognizer.maxTapInterval = 200;
 
 
 
         //setWwd(eww);
-        let wmsConfigBg_s2 = {
-            service: "https://tiles.maps.eox.at/wms",
-            layerNames: "s2cloudless-2018",
-            title: "s2cloudless-2018",
-            numLevels: 19,
-            format: "image/png",
-            size: 256,
-            sector: WorldWind.Sector.FULL_SPHERE,
-            levelZeroDelta: new WorldWind.Location(90, 90)
-        }
-        let wmsConfigBg_terrain = {
-            service: "https://tiles.maps.eox.at/wms",
-            layerNames: "terrain",
-            title: "terrain",
-            numLevels: 19,
-            format: "image/png",
-            size: 256,
-            sector: WorldWind.Sector.FULL_SPHERE,
-            levelZeroDelta: new WorldWind.Location(90, 90)
-        }
-    
-        let wmsConfigNames = {
-            service: "https://tiles.maps.eox.at/wms",
-            layerNames: "overlay_bright",
-            title: "overlay_bright",
-            numLevels: 19,
-            format: "image/png",
-            size: 256,
-            sector: WorldWind.Sector.FULL_SPHERE,
-            levelZeroDelta: new WorldWind.Location(90, 90)
-        }
 
         WorldWind.configuration.baseUrl = WorldWind.configuration.baseUrl.slice(0,-3)
 
@@ -604,19 +640,31 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         let quicklookLayer = new WorldWind.RenderableLayer('Quicklooks')
     
         let layers = [
-            { layer: new WorldWind.WmsLayer(wmsConfigBg_s2, ""), enabled: true },
-            { layer: new WorldWind.WmsLayer(wmsConfigBg_terrain, ""), enabled: false },
-            { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
+            // { layer: new WorldWind.WmsLayer(wmsConfigBg_s2, ""), enabled: true },
+            // { layer: new WorldWind.WmsLayer(wmsConfigBg_terrain, ""), enabled: false },
+            // { layer: new WorldWind.WmsLayer(wmsConfigNames, ""), enabled: names },
             { layer: starFieldLayer, enabled: starfield },
             { layer: atmosphereLayer, enabled: atmosphere },
             { layer: quicklookLayer, enabled: true },
             { layer: modelsLayer, enabled: false }
         ];
     
+        for (let l = 0; l < bgLayers.length; l++) {
+            let layer = new WorldWind.WmsLayer(bgLayers[l], "")
+            layer.enabled = false
+            eww.current.addLayer(layer, "")
+        }
+        for (let l = 0; l < ovLayers.length; l++) {
+            let layer = new WorldWind.WmsLayer(ovLayers[l], "")
+            layer.enabled = false
+            eww.current.addLayer(layer, "")
+        }
+
         for (let l = 0; l < layers.length; l++) {
             layers[l].layer.enabled = layers[l].enabled;
             eww.current.addLayer(layers[l].layer);
         }
+        console.log(eww.current.layers)
         //let date = new Date();
         starFieldLayer.time = new Date();
         atmosphereLayer.time = new Date();
@@ -631,6 +679,34 @@ export function useEww({ id, clon, clat, alt, starfield, atmosphere, names }) {
         // eww.current.orderedRenderingFilters.push(declutterByTime)
     }, []); // effect runs only once
         
-  
-  return { ewwstate, removeGeojson, addGeojson, addWMS, setStarfield, setAtmosphere, setTime, toggleProjection, setNames, toggleModel, toggleBg, northUp };
+      // useEffect(() => {
+    //     console.log("useEffect aoi: " + aoi)
+    //     let newewwstate = {...ewwstate, aoi: aoi}
+    //     setEwwState(newewwstate)
+    // }, [aoi]); 
+    useEffect(() => {
+        console.log("Copernicus Dem: " + demOn)
+        var elevationModel
+        if(!copDemOn.current) {
+            console.log('Switching to Copernicus Dem')
+            elevationModel = new WorldWind.ElevationModel();
+            elevationModel.addCoverage(new WorldWind.TiledElevationCoverage({
+                coverageSector: WorldWind.Sector.FULL_SPHERE,
+                resolution: 0.008333333333333,
+                retrievalImageFormat: "image/tiff",
+                minElevation: -11000,
+                maxElevation: 8850,
+                urlBuilder: new WorldWind.WcsTileUrlBuilder("https://dem.esa.maps.eox.at/elevation", "copdem", "2.0.1")
+                }));    
+            
+        } else {
+            console.log('Switching to NASA Dem')
+            elevationModel = new WorldWind.EarthElevationModel()
+        }
+        eww.current.globe.elevationModel = elevationModel
+        eww.current.redraw();
+
+    }, [demOn]); 
+
+  return { ewwstate, removeGeojson, addGeojson, addWMS, setStarfield, setAtmosphere, setTime, toggleProjection, setNames, toggleModel, toggleBg, toggleOv, toggleDem, northUp };
 }

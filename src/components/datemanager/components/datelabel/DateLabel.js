@@ -1,6 +1,6 @@
 import React from 'react';
 import dateFormat from "dateformat"
-import './DateLabel.css';
+import './DateLabelCard.css';
 
 function DateLabel({date, highlight, animated}) {
 

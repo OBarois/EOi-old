@@ -38,9 +38,9 @@ function App() {
 
 
       
-    useEffect(() => {
-        // console.log('startdate changed to: '+startdate.toJSON())
-    },[startdate])
+    // useEffect(() => {
+    //     // console.log('startdate changed to: '+startdate.toJSON())
+    // },[startdate])
     
     const [isFull,setIsfull] = useState(false)
     const { isFullscreen, toggleFullscreen } = useFullscreen(window.document.body);
@@ -51,12 +51,12 @@ function App() {
         <div className="App" >
             <Fullscreen enabled={isFull} onChange={() =>  {if(!isFullscreen) setIsfull(false)} }>
                 <div className="Earth">
-                    <Earth viewdate={viewdate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names}  clon='0.5' clat='40' />
+                    <Earth viewdate={viewdate} id="globe" starfield={mapSettings.starfield} atmosphere={mapSettings.atmosphere} names={mapSettings.names} background={mapSettings.background} clon='0.5' clat='40' />
                 </div>
                 <DateManager startdate={startdate} onDateChange={changeDate} onFinalDateChange={finalChangeDate} animated={searching}/>
                 <ControlPanel active="true">
-                <C_MissionSelector></C_MissionSelector>
-                <C_MapSelector ></C_MapSelector>
+                    <C_MissionSelector></C_MissionSelector>
+                    <C_MapSelector ></C_MapSelector>
                 </ControlPanel>
                 <div className='MissionLabel'>{mission}</div>
             </Fullscreen>

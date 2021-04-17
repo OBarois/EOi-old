@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useSpring, animated} from 'react-spring'
 import { useGesture } from 'react-use-gesture'
-import { scale } from 'vec-la'
+import { add, sub, scale } from 'vec-la'
 import DateSelectorScale from './DateSelectorScale'
 
 import './DateSelector.css';
@@ -101,9 +101,9 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
         }) => {
             //event.preventDefault()
             let zoom
-            // console.log(down)
+
             if (first) {
-                // console.log('shiftKey: '+shiftKey)
+                console.log('shiftKey: '+shiftKey)
                 setActive(true)
                 handleDoubleTap()
                 setlLastStartdate(scaledate)
@@ -112,8 +112,8 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
             }
 
             if (doubleTap.current || shiftKey) {
-                // console.log('in double tap')
-                // console.log(' / movement / delta :  '+'/ '+movement[1]+'/ '+ delta[1] )
+                console.log('in double tap')
+                console.log(' / movement / delta :  '+'/ '+movement[1]+'/ '+ delta[1] )
                 // zoom = temp.currentzoom + temp.currentzoom / 50 * (temp.lastdelta[1] - delta[1] )
                 zoom = temp.currentzoom + temp.currentzoom / 50 *  delta[1] 
                 if (zoom < MINZOOM) zoom = MINZOOM
@@ -129,7 +129,8 @@ function DateSelector({startdate, onDateChange, onFinalDateChange, onStepChange}
 
             setyOnDrag({                 
                 posxy_drag:  movement, 
-                immediate: down, 
+                // immediate: down, 
+                immediate: false, 
                 config: { velocity: scale(direction, velocity), decay: true},
                 onFrame: ()=>{
                     // console.log('y / movement / delta:  '+xy[1]+'/ '+movement[1]+'/ '+delta[1])

@@ -8,7 +8,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 
 
-function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) {
+function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names, background }) {
 
     const {
         ewwstate,
@@ -20,8 +20,10 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
         setStarfield,
         setNames,
         toggleBg,
+        toggleOv,
         toggleModel,
         setTime,
+        toggleDem,
         northUp
     } = useEww({
         id: id,
@@ -38,6 +40,8 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     useHotkeys("u",northUp)
     useHotkeys("b",toggleBg)
     useHotkeys("m",toggleModel)
+    useHotkeys("d",toggleDem)
+    useHotkeys("o",toggleOv)
 
     useEffect(() => {
         setTime(viewdate.getTime())
@@ -54,6 +58,11 @@ function Earth({ viewdate, id, clat, clon, alt, starfield, atmosphere, names }) 
     useEffect(() => {
         setAtmosphere(atmosphere)
     },[atmosphere])
+
+    useEffect(() => {
+        toggleBg()
+        console.log("bg changed")
+    },[background])
 
 
 

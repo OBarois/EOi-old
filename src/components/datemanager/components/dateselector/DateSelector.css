@@ -42,9 +42,9 @@
     right: 0px;
     width: 40px;
     height: 100%;
-    background: rgba(99, 26, 54, 0.493);
-    mask-image: linear-gradient(to bottom, rgba(42, 177, 42, 0), rgba(0,0,0,1), rgba(48, 139, 151, 0));
-    -webkit-mask-image: linear-gradient(to bottom, rgba(42, 177, 42, 0), rgba(0,0,0,1), rgba(48, 139, 151, 0));
+    background: rgba(26, 70, 99, 0);
+    /* mask-image: linear-gradient(to bottom, rgba(42, 177, 42, 0), rgba(0,0,0,1), rgba(48, 139, 151, 0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(42, 177, 42, 0), rgba(0,0,0,1), rgba(48, 139, 151, 0)); */
 }
 
 
